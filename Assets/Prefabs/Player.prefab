@@ -129,7 +129,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   armInfo: {fileID: 11400000, guid: 289100f42d2f6ce43879d528944432ff, type: 2}
-  GUIShowPeek: 0
+  GUIShowRetract: 0
+  GUIShowExtend: 0
 --- !u!1001 &2415759621108655992
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -191,12 +192,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4740845969635163819, guid: abbedceb363c04f4599dbe0750055158, type: 3}
       propertyPath: m_Name
-      value: Hand (2)
+      value: HandSphere
       objectReference: {fileID: 0}
     - target: {fileID: 4740845969635163819, guid: abbedceb363c04f4599dbe0750055158, type: 3}
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 4740845969635163819, guid: abbedceb363c04f4599dbe0750055158, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5136539966412227504, guid: abbedceb363c04f4599dbe0750055158, type: 3}
+      propertyPath: m_ConnectedBody
+      value: 
+      objectReference: {fileID: 1700675736603387709}
     - target: {fileID: 5168202816817581366, guid: abbedceb363c04f4599dbe0750055158, type: 3}
       propertyPath: m_Name
       value: Arm (2)
@@ -206,6 +215,10 @@ PrefabInstance:
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5351832983575504126, guid: abbedceb363c04f4599dbe0750055158, type: 3}
+      propertyPath: m_ConnectedBody
+      value: 
+      objectReference: {fileID: 1700675736603387709}
+    - target: {fileID: 6212287381991638257, guid: abbedceb363c04f4599dbe0750055158, type: 3}
       propertyPath: m_ConnectedBody
       value: 
       objectReference: {fileID: 1700675736603387709}
@@ -242,6 +255,10 @@ PrefabInstance:
     - target: {fileID: 3001691756218577268, guid: abbedceb363c04f4599dbe0750055158, type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3132738540118507122, guid: abbedceb363c04f4599dbe0750055158, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3277991197873102491, guid: abbedceb363c04f4599dbe0750055158, type: 3}
       propertyPath: m_RootOrder
@@ -291,6 +308,14 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 4740845969635163819, guid: abbedceb363c04f4599dbe0750055158, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5136539966412227504, guid: abbedceb363c04f4599dbe0750055158, type: 3}
+      propertyPath: m_ConnectedBody
+      value: 
+      objectReference: {fileID: 1700675736603387709}
     - target: {fileID: 5168202816817581366, guid: abbedceb363c04f4599dbe0750055158, type: 3}
       propertyPath: m_Name
       value: Arm
@@ -300,6 +325,10 @@ PrefabInstance:
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5351832983575504126, guid: abbedceb363c04f4599dbe0750055158, type: 3}
+      propertyPath: m_ConnectedBody
+      value: 
+      objectReference: {fileID: 1700675736603387709}
+    - target: {fileID: 6212287381991638257, guid: abbedceb363c04f4599dbe0750055158, type: 3}
       propertyPath: m_ConnectedBody
       value: 
       objectReference: {fileID: 1700675736603387709}
@@ -343,11 +372,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3277991197873102491, guid: abbedceb363c04f4599dbe0750055158, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.268
+      value: 0.306
       objectReference: {fileID: 0}
     - target: {fileID: 3277991197873102491, guid: abbedceb363c04f4599dbe0750055158, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.195
+      value: -0.154
       objectReference: {fileID: 0}
     - target: {fileID: 3277991197873102491, guid: abbedceb363c04f4599dbe0750055158, type: 3}
       propertyPath: m_LocalPosition.z
@@ -355,7 +384,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3277991197873102491, guid: abbedceb363c04f4599dbe0750055158, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.9560451
       objectReference: {fileID: 0}
     - target: {fileID: 3277991197873102491, guid: abbedceb363c04f4599dbe0750055158, type: 3}
       propertyPath: m_LocalRotation.x
@@ -367,7 +396,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3277991197873102491, guid: abbedceb363c04f4599dbe0750055158, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: -0.29321957
       objectReference: {fileID: 0}
     - target: {fileID: 3277991197873102491, guid: abbedceb363c04f4599dbe0750055158, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -379,16 +408,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3277991197873102491, guid: abbedceb363c04f4599dbe0750055158, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: -34.102
+      objectReference: {fileID: 0}
+    - target: {fileID: 3516501938794766009, guid: abbedceb363c04f4599dbe0750055158, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4740845969635163819, guid: abbedceb363c04f4599dbe0750055158, type: 3}
       propertyPath: m_Name
-      value: Hand (1)
+      value: HandSphere
       objectReference: {fileID: 0}
     - target: {fileID: 4740845969635163819, guid: abbedceb363c04f4599dbe0750055158, type: 3}
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 4740845969635163819, guid: abbedceb363c04f4599dbe0750055158, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5136539966412227504, guid: abbedceb363c04f4599dbe0750055158, type: 3}
+      propertyPath: m_ConnectedBody
+      value: 
+      objectReference: {fileID: 1700675736603387709}
     - target: {fileID: 5168202816817581366, guid: abbedceb363c04f4599dbe0750055158, type: 3}
       propertyPath: m_Name
       value: Arm (1)
@@ -398,6 +439,10 @@ PrefabInstance:
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5351832983575504126, guid: abbedceb363c04f4599dbe0750055158, type: 3}
+      propertyPath: m_ConnectedBody
+      value: 
+      objectReference: {fileID: 1700675736603387709}
+    - target: {fileID: 6212287381991638257, guid: abbedceb363c04f4599dbe0750055158, type: 3}
       propertyPath: m_ConnectedBody
       value: 
       objectReference: {fileID: 1700675736603387709}
