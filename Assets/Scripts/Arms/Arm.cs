@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.XR;
+using static UnityEditor.PlayerSettings;
 
 public class Arm : MonoBehaviour
 {
@@ -18,16 +19,25 @@ public class Arm : MonoBehaviour
     [SerializeField] private float maxSpeedRetract = 20f;
     [SerializeField] private float accelerationRetract = 40f;
 
+    [Header("Private")]
+    [SerializeField] private EArmState armState;
+    [SerializeField] private Vector2 handLocalPos;
+
+
     private float currentMinSpeed;
     private float currentMaxSpeed;
+    private Vector2 currentVelocity;
     private float currentAcceleration;
+
+    private Vector2 directionVec;
+
 
     Transform hand;
     Rigidbody rbHand;
+    FixedJoint joint;
     //Rigidbody rbCylindre;
 
     private Vector2 desiredVelocity;
-    EArmState armState;
 
 
     private enum EArmState
@@ -41,6 +51,7 @@ public class Arm : MonoBehaviour
     void Awake()
     {
         SetupRigidbodies();
+
     }
 
     // Update is called once per frame
@@ -52,19 +63,27 @@ public class Arm : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (armState == EArmState.Inactive)
-            return;
-
-        Vector2 distanceVec = hand.position - transform.position;
-        if (distanceVec.sqrMagnitude <= 0 || distanceVec.sqrMagnitude >= maxLenght) //check if need to be inactive
+        if (armState != EArmState.Inactive)
         {
-            armState = EArmState.Inactive;
-            return;
+            //directionVec = transform.localPosition.normalized;
+            float dot = Vector2.Dot(directionVec, hand.localPosition - transform.localPosition);
+
+            if ((armState == EArmState.Retract && dot >= 0) ||
+                (armState == EArmState.Extend && dot >= maxLenght)) //check if need to be inactive
+            {
+                armState = EArmState.Inactive;
+                return;
+            }
+
+            //arm is active
+            //if (desiredVelocity.sqrMagnitude != 0)
+            MoveHand();
         }
 
-        //arm is active
-        if (desiredVelocity.sqrMagnitude != 0)
-            MoveHand();
+        hand.localPosition = Vector2.Dot(hand.localPosition, directionVec) * directionVec; //dirVec already normalized
+        joint.connectedAnchor = hand.localPosition;
+
+        handLocalPos = hand.localPosition;
     }
 
     private void SetupRigidbodies()
@@ -77,15 +96,18 @@ public class Arm : MonoBehaviour
             {
                 rbHand = rb;
                 hand = rb.gameObject.transform;
+                joint = hand.GetComponent<FixedJoint>();
                 break;
             }
         }
+
+        //Physics.IgnoreCollision(this.GetComponentInParent<Collider>(), rbHand.GetComponent<Collider>());
     }
 
-    private void SetupArmState(EArmState state)
+    bool SetupArmState(EArmState state)
     {
         if (armState == state)
-            return;
+            return false;
 
         //if (armState == EArmState.Inactive) //activate deactivate rb
 
@@ -106,59 +128,51 @@ public class Arm : MonoBehaviour
         }
 
         armState = state;
+        return true;
     }
 
     //Both kinda same
     public void ExtendArm()
     {
-        SetupArmState(EArmState.Extend);
+        if (!SetupArmState(EArmState.Extend))
+            return;
 
-        Vector2 parentPos = gameObject.GetComponentInParent<Transform>().position;
-        Vector2 awayParent = (Vector2)transform.position - parentPos;
+        directionVec = transform.localPosition.normalized;
+        currentVelocity = new Vector2(0f, 0f);
 
-        SetDisiredVelocity(awayParent);
+        SetDisiredVelocity();
     }
 
     public void RetractArm()
     {
-        SetupArmState(EArmState.Retract);
+        if (!SetupArmState(EArmState.Retract))
+            return;
 
-        Vector2 parentPos = gameObject.GetComponentInParent<Transform>().position;
-        Vector2 towoardsParent = parentPos - (Vector2)transform.position;
+        directionVec = -(transform.localPosition.normalized);
+        currentVelocity = new Vector2(0f, 0f);
 
-        SetDisiredVelocity(towoardsParent);
+        SetDisiredVelocity();
     }
 
-    /// <summary>
-    /// Cant invert dirForce direction based on maxSpeed
-    /// </summary>
-    private void SetDisiredVelocity(Vector2 dirForce)
+    private void SetDisiredVelocity()
     {
-        desiredVelocity = dirForce * currentMaxSpeed;
+        desiredVelocity = directionVec * currentMaxSpeed;
         //desiredVelocity = dirForce * Mathf.Max(maxSpeed, 0f);
     }
 
     private void MoveHand()
     {
-        Vector2 velocity = (Vector2)rbHand.velocity;
-
-        if (velocity.sqrMagnitude < currentMinSpeed * currentMinSpeed) //if slower then min speed, set to min speed
-            velocity = velocity.normalized * currentMinSpeed;
+        if (currentVelocity.sqrMagnitude < currentMinSpeed * currentMinSpeed) //if slower then min speed, set to min speed
+            currentVelocity = desiredVelocity.normalized * currentMinSpeed;
 
         float maxSpeedChange = currentAcceleration * Time.deltaTime;
-        velocity = MyMoveTowards2D(velocity, desiredVelocity, maxSpeedChange);
-        rbHand.velocity = (Vector3)velocity;
-    }
+        currentVelocity = MyMoveTowards2D(currentVelocity, desiredVelocity, maxSpeedChange);
 
-    //// TODO : make MyMath script
-    //private Vector2 ToVector2(Vector3 vec3)
-    //{
-    //    return new Vector2(vec3.x, vec3.y);
-    //}
-    //private Vector3 ToVector3(Vector2 vec2, float z = 0f)
-    //{
-    //    return new Vector3(vec2.x, vec2.y, z);
-    //}
+        Vector2 pos = (Vector2)rbHand.transform.localPosition;
+        pos = MyLerp2D(pos, currentVelocity, Time.deltaTime);
+
+        rbHand.transform.localPosition = (Vector3)pos;
+    }
 
     // TODO : make MyMath script
     private Vector2 MyMoveTowards2D(Vector2 current, Vector2 target, float maxDelta)
@@ -169,12 +183,14 @@ public class Arm : MonoBehaviour
         return current + (target - current).normalized * maxDelta;
     }
 
+    private Vector2 MyLerp2D(Vector2 current, Vector2 direction, float t)
+    {
+        return current + (direction * t);
+    }
 
 
     //private void OnCollisionEnter(Collision collision)
     //{
     //    if (collision == null) { return; }
-
-
     //}
 }

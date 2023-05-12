@@ -20,9 +20,9 @@ public class @InputController : IInputActionCollection, IDisposable
             ""actions"": [
                 {
                     ""name"": ""Arm1"",
-                    ""type"": ""Value"",
+                    ""type"": ""Button"",
                     ""id"": ""95be1f88-02e0-438c-b106-01e41aefc3bf"",
-                    ""expectedControlType"": ""Vector2"",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Press(behavior=2)""
                 },
@@ -70,7 +70,7 @@ public class @InputController : IInputActionCollection, IDisposable
                     ""name"": """",
                     ""id"": ""aa5cc3d8-d594-415e-954c-8f45a65a69b5"",
                     ""path"": ""<Keyboard>/w"",
-                    ""interactions"": ""Press"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Arm1"",
