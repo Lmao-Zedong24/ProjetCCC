@@ -1,20 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR;
 using static InputController;
 
+#if UNITY_EDITOR
+using UnityEditor;
+using UnityEditor.Animations;
+using UnityEngine.EventSystems;
+#endif
+
 public class PlayerController : MonoBehaviour, IPlayerActions
 {
     @InputController _controller;
     Arm[] Arms;
 
+    [SerializeField] private ArmInfo armInfo;
 
-    // Start is called before the first frame update
-    // Update is called once per frame
-
+    //TODO : better player controller
     private void Awake()
     {
         _controller = new @InputController();
@@ -40,11 +46,16 @@ public class PlayerController : MonoBehaviour, IPlayerActions
         if (i < 0 || i >= Arms.Length)
             return;
 
-        if (input.started)
-            Arms[i].ExtendArm();
+        if (input.started || input.canceled)
+        {
+            Arms[i].SetupArmInfo(armInfo);
 
-        if (input.canceled)
-            Arms[i].RetractArm();
+            if (input.started)
+                Arms[i].ExtendArm();
+
+            else if (input.canceled)
+                Arms[i].RetractArm();
+        }
     }
 
     private void InteractArm(InputActionPhase phase, int i)
@@ -73,4 +84,59 @@ public class PlayerController : MonoBehaviour, IPlayerActions
     {
         InteractArm(context, 2);
     }
+
+    #region Editor
+#if UNITY_EDITOR
+
+    [SerializeField] private bool GUIShowRetract;
+    [SerializeField] private bool GUIShowExtend;
+
+    [CustomEditor(typeof(PlayerController))]
+    public class PlayerControllerEditor : Editor
+    {
+        private SerializedProperty _armInfoProperty;
+
+        private void OnEnable()
+        {
+            _armInfoProperty = serializedObject.FindProperty("armInfo");
+        }
+
+        public override void OnInspectorGUI()
+        {
+            //base.OnInspectorGUI();
+            //EditorGUILayout.Space();
+
+            PlayerController player = (PlayerController)target;
+
+            EditorGUILayout.PropertyField(_armInfoProperty);
+            serializedObject.ApplyModifiedProperties();
+
+            if (player.armInfo != null)
+            {
+                if (player.GUIShowExtend = EditorGUILayout.Foldout(player.GUIShowExtend, "Extend"))
+                {
+                    EditorGUI.indentLevel++;
+                    player.armInfo.minSpeedExtend = EditorGUILayout.Slider("Min Speed", player.armInfo.minSpeedExtend, 0f, 100f);
+                    player.armInfo.maxSpeedExtend = EditorGUILayout.Slider("Max Speed", player.armInfo.maxSpeedExtend, 0f, 100f);
+                    player.armInfo.accelerationExtend = EditorGUILayout.Slider("Acceleration", player.armInfo.maxSpeedExtend, 0f, 100f);
+                    EditorGUI.indentLevel--;
+                    EditorGUILayout.Space();
+                }
+
+                if (player.GUIShowRetract = EditorGUILayout.Foldout(player.GUIShowRetract, "Retract"))
+                { 
+                    EditorGUI.indentLevel++;
+                    player.armInfo.minSpeedRetract = EditorGUILayout.Slider("Min Speed", player.armInfo.minSpeedRetract, 0f, 100f);
+                    player.armInfo.maxSpeedRetract = EditorGUILayout.Slider("Max Speed", player.armInfo.maxSpeedRetract, 0f, 100f);
+                    player.armInfo.accelerationRetract = EditorGUILayout.Slider("Acceleration", player.armInfo.maxSpeedRetract, 0f, 100f);
+                    EditorGUI.indentLevel--;
+                    EditorGUILayout.Space();
+                }
+            }
+        }
+    }
+
+#endif
+    #endregion
+
 }
