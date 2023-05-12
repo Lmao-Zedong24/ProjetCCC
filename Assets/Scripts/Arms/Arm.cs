@@ -7,28 +7,21 @@ using static UnityEditor.PlayerSettings;
 
 public class Arm : MonoBehaviour
 {
-    [SerializeField] private float maxLenght = 10f;
+    private float maxLenght = 10f;
 
-    [Header("Extend")]
-    [SerializeField] private float minSpeedExtend = 10f;
-    [SerializeField] private float maxSpeedExtend = 40f;
-    [SerializeField] private float accelerationExtend = 10f;
+    private float minSpeedExtend = 10f;
+    private float maxSpeedExtend = 40f;
+    private float accelerationExtend = 10f;
 
-    [Header("Extend")]
-    [SerializeField] private float minSpeedRetract = 20f;
-    [SerializeField] private float maxSpeedRetract = 20f;
-    [SerializeField] private float accelerationRetract = 40f;
-
-    [Header("Private")]
-    [SerializeField] private EArmState armState;
-    [SerializeField] private Vector2 handLocalPos;
-
+    private float minSpeedRetract = 20f;
+    private float maxSpeedRetract = 20f;
+    private float accelerationRetract = 40f;
 
     private float currentMinSpeed;
     private float currentMaxSpeed;
     private Vector2 currentVelocity;
     private float currentAcceleration;
-
+    private EArmState armState;
     private Vector2 directionVec;
 
 
@@ -51,7 +44,7 @@ public class Arm : MonoBehaviour
     void Awake()
     {
         SetupRigidbodies();
-
+        //SetupArmInfo();
     }
 
     // Update is called once per frame
@@ -83,7 +76,7 @@ public class Arm : MonoBehaviour
         hand.localPosition = Vector2.Dot(hand.localPosition, directionVec) * directionVec; //dirVec already normalized
         joint.connectedAnchor = hand.localPosition;
 
-        handLocalPos = hand.localPosition;
+
     }
 
     private void SetupRigidbodies()
@@ -103,6 +96,22 @@ public class Arm : MonoBehaviour
 
         //Physics.IgnoreCollision(this.GetComponentInParent<Collider>(), rbHand.GetComponent<Collider>());
     }
+    public void SetupArmInfo(ArmInfo armInfo)
+    {
+        if (armInfo == null)
+            return;
+
+        maxLenght = armInfo.maxLenght;
+        
+        minSpeedExtend = armInfo.minSpeedExtend;
+        maxSpeedExtend = armInfo.maxSpeedExtend;
+        accelerationExtend = armInfo.accelerationExtend;
+        
+        minSpeedRetract = armInfo.minSpeedRetract;
+        maxSpeedRetract = armInfo.maxSpeedRetract;
+        accelerationRetract = armInfo.accelerationRetract;
+    }
+
 
     bool SetupArmState(EArmState state)
     {
@@ -164,9 +173,12 @@ public class Arm : MonoBehaviour
     {
         if (currentVelocity.sqrMagnitude < currentMinSpeed * currentMinSpeed) //if slower then min speed, set to min speed
             currentVelocity = desiredVelocity.normalized * currentMinSpeed;
-
-        float maxSpeedChange = currentAcceleration * Time.deltaTime;
-        currentVelocity = MyMoveTowards2D(currentVelocity, desiredVelocity, maxSpeedChange);
+        
+        if (currentAcceleration != 0)
+        {
+            float maxSpeedChange = currentAcceleration * Time.deltaTime;
+            currentVelocity = MyMoveTowards2D(currentVelocity, desiredVelocity, maxSpeedChange);
+        }
 
         Vector2 pos = (Vector2)rbHand.transform.localPosition;
         pos = MyLerp2D(pos, currentVelocity, Time.deltaTime);
