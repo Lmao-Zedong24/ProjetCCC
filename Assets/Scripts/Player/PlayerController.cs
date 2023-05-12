@@ -118,7 +118,7 @@ public class PlayerController : MonoBehaviour, IPlayerActions
                     EditorGUI.indentLevel++;
                     player.armInfo.minSpeedExtend = EditorGUILayout.Slider("Min Speed", player.armInfo.minSpeedExtend, 0f, 100f);
                     player.armInfo.maxSpeedExtend = EditorGUILayout.Slider("Max Speed", player.armInfo.maxSpeedExtend, 0f, 100f);
-                    player.armInfo.accelerationExtend = EditorGUILayout.Slider("Acceleration", player.armInfo.maxSpeedExtend, 0f, 100f);
+                    player.armInfo.accelerationExtend = EditorGUILayout.Slider("Acceleration", player.armInfo.accelerationExtend, 0f, 100f);
                     EditorGUI.indentLevel--;
                     EditorGUILayout.Space();
                 }
@@ -128,7 +128,7 @@ public class PlayerController : MonoBehaviour, IPlayerActions
                     EditorGUI.indentLevel++;
                     player.armInfo.minSpeedRetract = EditorGUILayout.Slider("Min Speed", player.armInfo.minSpeedRetract, 0f, 100f);
                     player.armInfo.maxSpeedRetract = EditorGUILayout.Slider("Max Speed", player.armInfo.maxSpeedRetract, 0f, 100f);
-                    player.armInfo.accelerationRetract = EditorGUILayout.Slider("Acceleration", player.armInfo.maxSpeedRetract, 0f, 100f);
+                    player.armInfo.accelerationRetract = EditorGUILayout.Slider("Acceleration", player.armInfo.accelerationRetract, 0f, 100f);
                     EditorGUI.indentLevel--;
                     EditorGUILayout.Space();
                 }
