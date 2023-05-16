@@ -60,14 +60,19 @@ public class Arm : MonoBehaviour
         {
             MoveHand();
 
-            hand.localPosition = Vector2.Dot(hand.localPosition, directionVec) * directionVec; //dirVec already normalized
-            joint.connectedAnchor = hand.localPosition;
         }
+
+        hand.localPosition = Vector2.Dot(hand.localPosition, directionVec) * directionVec; //dirVec already 
+
+        if (armState != EArmState.Inactive)
+            joint.connectedAnchor = hand.localPosition;
+
+
 
 
         float dot = Vector2.Dot(directionVec, hand.localPosition - transform.localPosition);
 
-        if ((armState == EArmState.Retract && dot >= 0.5f) ||
+        if ((armState == EArmState.Retract && dot >= 0f) ||
             (armState == EArmState.Extend && dot >= maxLenght)) //check if need to be inactive
         {
             armState = EArmState.Inactive;
@@ -106,6 +111,12 @@ public class Arm : MonoBehaviour
         minSpeedRetract = armInfo.minSpeedRetract;
         maxSpeedRetract = armInfo.maxSpeedRetract;
         accelerationRetract = armInfo.accelerationRetract;
+    }
+
+    public void SetSpawnLocalPos(Vector2 localPos)
+    {
+        transform.localPosition = localPos;
+        joint.connectedAnchor = hand.localPosition;
     }
 
 
@@ -180,7 +191,7 @@ public class Arm : MonoBehaviour
         pos = MyLerp2D(pos, currentVelocity, Time.deltaTime);
 
         rbHand.transform.localPosition = (Vector3)pos;
-        //rbHand.velocity = new Vector3();
+        //rbHand.MovePosition(pos);
     }
 
     // TODO : make MyMath script

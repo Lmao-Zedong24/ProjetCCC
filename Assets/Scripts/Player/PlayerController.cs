@@ -18,6 +18,11 @@ public class PlayerController : MonoBehaviour, IPlayerActions
     @InputController _controller;
     Arm[] Arms;
 
+    //arm coordinates (x,y) :
+    //  R * (cos(0), sin(0))
+    //  R * (cos(2PI/3), sin(2PI/3))
+    //  R * (cos(4PI/3), sin(4PI/3))
+
     [SerializeField] private ArmInfo armInfo;
 
     //TODO : better player controller
@@ -28,6 +33,15 @@ public class PlayerController : MonoBehaviour, IPlayerActions
         _controller.Player.SetCallbacks(this);
 
         Arms = GetComponentsInChildren<Arm>();
+
+        float radius =  transform.localScale.x / 4; 
+        float teta =    Mathf.PI / 2; 
+        for(int i = 0; i < Arms.Length; i++)
+        {
+            float val = teta - 2 * Mathf.PI * i / 3f;
+            Arms[i].SetSpawnLocalPos(new Vector2(   radius * Mathf.Cos(val),
+                                                    radius * Mathf.Sin(val)));
+        }
     }
     void Update()
     {
