@@ -16,7 +16,9 @@ using UnityEngine.EventSystems;
 public class PlayerController : MonoBehaviour, IPlayerActions
 {
     @InputController _controller;
-    Arm[] Arms;
+    Arm[]       _arms;
+    Transform   _mainBody;
+    Collider    _collider;
 
     //arm coordinates (x,y) :
     //  R * (cos(0), sin(0))
@@ -32,56 +34,74 @@ public class PlayerController : MonoBehaviour, IPlayerActions
         _controller.Enable();
         _controller.Player.SetCallbacks(this);
 
-        Arms = GetComponentsInChildren<Arm>();
+        _arms = GetComponentsInChildren<Arm>();
+        _collider = GetComponent<Collider>();
 
         float radius =  transform.localScale.x / 4; 
         float teta =    Mathf.PI / 2; 
-        for(int i = 0; i < Arms.Length; i++)
+        for(int i = 0; i < _arms.Length; i++)
         {
             float val = teta - 2 * Mathf.PI * i / 3f;
-            Arms[i].SetSpawnLocalPos(new Vector2(   radius * Mathf.Cos(val),
+            _arms[i].SetSpawnLocalPos(new Vector2(   radius * Mathf.Cos(val),
                                                     radius * Mathf.Sin(val)));
+
+            Physics.IgnoreCollision(_collider, _arms[i].colHand);
         }
+
+        //var allTrans = GetComponentsInChildren<Transform>();
+
+        //foreach(Transform trans in allTrans)
+        //{
+        //    if (trans.CompareTag("MainBody"))
+        //    {
+        //        _mainBody = trans;
+        //        break;
+        //    }
+        //}
     }
     void Update()
     {
         InteractArm(_controller.Player.Arm1.phase, 0);
-
         InteractArm(_controller.Player.Arm1.phase, 1);
-
         InteractArm(_controller.Player.Arm1.phase, 2);
 
-        //test
-        //Arms[0].ExtendArm();
+        //foreach (var arm in _arms)
+        //    Debug.DrawLine(transform.position, arm.transform.position, Color.red, 1f);
+
+        //transform.position = _mainBody.position;
+        //transform.rotation = _mainBody.rotation;
+
+        //_mainBody.localPosition = new Vector3();
+        //_mainBody.rotation = Quaternion.identity;
     }
 
     private void InteractArm(InputAction.CallbackContext input, int i)
     {
-        if (i < 0 || i >= Arms.Length)
+        if (i < 0 || i >= _arms.Length)
             return;
 
         if (input.started || input.canceled)
         {
-            Arms[i].SetupArmInfo(armInfo);
+            _arms[i].SetupArmInfo(armInfo);
 
             if (input.started)
-                Arms[i].ExtendArm();
+                _arms[i].ExtendArm();
 
             else if (input.canceled)
-                Arms[i].RetractArm();
+                _arms[i].RetractArm();
         }
     }
 
     private void InteractArm(InputActionPhase phase, int i)
     {
-        if (i < 0 || i >= Arms.Length)
+        if (i < 0 || i >= _arms.Length)
             return;
 
         if (phase == InputActionPhase.Started)
-            Arms[i].ExtendArm();
+            _arms[i].ExtendArm();
 
         if (phase == InputActionPhase.Canceled)
-            Arms[i].RetractArm();
+            _arms[i].RetractArm();
     }
 
     public void OnArm1(InputAction.CallbackContext context)
@@ -102,8 +122,8 @@ public class PlayerController : MonoBehaviour, IPlayerActions
     #region Editor
 #if UNITY_EDITOR
 
-    [SerializeField] private bool GUIShowRetract;
-    [SerializeField] private bool GUIShowExtend;
+    [SerializeField] private bool GUIShowRetract = true;
+    [SerializeField] private bool GUIShowExtend = true;
 
     [CustomEditor(typeof(PlayerController))]
     public class PlayerControllerEditor : Editor
@@ -147,6 +167,15 @@ public class PlayerController : MonoBehaviour, IPlayerActions
                     EditorGUILayout.Space();
                 }
             }
+
+            if (player._arms != null)
+            {
+                EditorGUILayout.EnumFlagsField("Arm 1", player._arms[0].armState);
+                EditorGUILayout.EnumFlagsField("Arm 2", player._arms[1].armState);
+                EditorGUILayout.EnumFlagsField("Arm 3", player._arms[2].armState);
+                EditorGUILayout.Space();
+            }
+
         }
     }
 
