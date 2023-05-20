@@ -287,11 +287,11 @@ public class Arm : MonoBehaviour
         //rbHand.MovePosition(pos);
     }
 
-    void MoveBody()
-    {
+    //void MoveBody()
+    //{
 
-        rbHand.transform.localPosition = (Vector3)pos;
-    }
+    //    rbHand.transform.localPosition = (Vector3)pos;
+    //}
 
     // TODO : make MyMath script
 

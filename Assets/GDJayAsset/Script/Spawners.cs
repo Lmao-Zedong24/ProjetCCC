@@ -11,8 +11,8 @@ public class Spawners : MonoBehaviour
     public GameObject spawn5;
     public GameObject spawn6;
 
-    public GameObject playerGameObject;
-    public Rigidbody rb;
+    public GameObject   playerGameObject;
+    public Rigidbody    rb;
 
     private RigidbodyConstraints oldConst;
 
@@ -25,58 +25,28 @@ public class Spawners : MonoBehaviour
 
     void OnSpawn1(InputValue value)
     {
-        playerGameObject.transform.position = spawn1.transform.position;
-        Quaternion newRotation = Quaternion.Euler(180f, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
-        playerGameObject.transform.rotation = newRotation;
-        oldConst = rb.constraints;
-        rb.constraints = RigidbodyConstraints.FreezeRotation;
-        Invoke("UnfreezeRotation", 0.01f);
+        SpawnPlayer(spawn1.transform.position);
     }
     void OnSpawn2(InputValue value)
     {
-        playerGameObject.transform.position = spawn2.transform.position;
-        Quaternion newRotation = Quaternion.Euler(180f, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
-        playerGameObject.transform.rotation = newRotation;
-        oldConst = rb.constraints;
-        rb.constraints = RigidbodyConstraints.FreezeRotation;
-        Invoke("UnfreezeRotation", 0.01f);
+        SpawnPlayer(spawn2.transform.position);
     }
     void OnSpawn3(InputValue value)
     {
-        playerGameObject.transform.position = spawn3.transform.position;
-        Quaternion newRotation = Quaternion.Euler(180f, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
-        playerGameObject.transform.rotation = newRotation;
-        oldConst = rb.constraints;
-        rb.constraints = RigidbodyConstraints.FreezeRotation;
-        Invoke("UnfreezeRotation", 0.01f);
+        SpawnPlayer(spawn3.transform.position);
     }
     void OnSpawn4(InputValue value)
     {
-        playerGameObject.transform.position = spawn4.transform.position;
-        Quaternion newRotation = Quaternion.Euler(180f, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
-        playerGameObject.transform.rotation = newRotation;
-        oldConst = rb.constraints;
-        rb.constraints = RigidbodyConstraints.FreezeRotation;
-        Invoke("UnfreezeRotation", 0.01f);
+        SpawnPlayer(spawn4.transform.position);
     }
     void OnSpawn5(InputValue value)
     {
-        playerGameObject.transform.position = spawn5.transform.position;
-        Quaternion newRotation = Quaternion.Euler(180f, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
-        playerGameObject.transform.rotation = newRotation;
-        oldConst = rb.constraints;
-        rb.constraints = RigidbodyConstraints.FreezeRotation;
-        Invoke("UnfreezeRotation", 0.01f);
+        SpawnPlayer(spawn5.transform.position);
     }
 
     void OnSpawn6(InputValue value)
     {
-        playerGameObject.transform.position = spawn6.transform.position;
-        Quaternion newRotation = Quaternion.Euler(180f, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
-        playerGameObject.transform.rotation = newRotation;
-        oldConst = rb.constraints;
-        rb.constraints = RigidbodyConstraints.FreezeRotation;
-        Invoke("UnfreezeRotation", 0.01f);
+        SpawnPlayer(spawn6.transform.position);
     }
 
 
@@ -84,6 +54,17 @@ public class Spawners : MonoBehaviour
     {
         // On réactive la rotation de l'objet
         rb.constraints = oldConst;
+    }
+
+    void SpawnPlayer(Vector3 spawnPos)
+    {
+        playerGameObject.transform.position = spawnPos;
+        Quaternion newRotation = Quaternion.Euler(0, 0, 180f);
+        playerGameObject.transform.rotation = newRotation;
+        oldConst = rb.constraints;
+        rb.velocity = new Vector3(0, 0, 0);
+        rb.constraints = RigidbodyConstraints.FreezeRotation;
+        Invoke("UnfreezeRotation", 0.01f);
     }
 
 }
