@@ -290,6 +290,7 @@ public class Arm : MonoBehaviour
     void MoveBody()
     {
 
+        rbHand.transform.localPosition = (Vector3)pos;
     }
 
     // TODO : make MyMath script

@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -143,10 +142,15 @@ public class PlayerController : MonoBehaviour, IPlayerActions
             PlayerController player = (PlayerController)target;
 
             EditorGUILayout.PropertyField(_armInfoProperty);
+            EditorGUILayout.Space();
+
             serializedObject.ApplyModifiedProperties();
 
             if (player.armInfo != null)
             {
+                player.armInfo.maxLenght = EditorGUILayout.Slider("Max Lenght", player.armInfo.maxLenght, 0f, 50f);
+                EditorGUILayout.Space();
+
                 if (player.GUIShowExtend = EditorGUILayout.Foldout(player.GUIShowExtend, "Extend"))
                 {
                     EditorGUI.indentLevel++;
