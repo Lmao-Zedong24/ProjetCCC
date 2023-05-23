@@ -30,7 +30,7 @@
                     "interactions": "Press(behavior=2)"
                 },
                 {
-                    "name": "StickyArm",
+                    "name": "StickyArmActive",
                     "type": "Button",
                     "id": "5e927169-b2f3-4f0b-b4d1-c3fa84184ac6",
                     "expectedControlType": "Button",
@@ -38,12 +38,12 @@
                     "interactions": "Press"
                 },
                 {
-                    "name": "PivotStickyArm",
+                    "name": "StickyArmUndo",
                     "type": "Button",
-                    "id": "2e08e7b2-33c9-4eea-91e4-43a90589fd58",
+                    "id": "e427c478-35ae-4e50-8a1a-9e9ea4d54253",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "Press"
+                    "interactions": "Press(behavior=1)"
                 }
             ],
             "bindings": [
@@ -83,22 +83,22 @@
                 {
                     "name": "",
                     "id": "0100e706-3a6d-4665-b1e0-809322d90ff3",
-                    "path": "<Keyboard>/space",
+                    "path": "<Keyboard>/shift",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "StickyArm",
+                    "action": "StickyArmActive",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "612da263-59e5-42cb-ad80-8e6ceb902426",
+                    "id": "43f35a71-092c-4f47-b24c-ee3444a8d1ae",
                     "path": "<Keyboard>/shift",
-                    "interactions": "Press",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "PivotStickyArm",
+                    "action": "StickyArmUndo",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -157,74 +157,7 @@
                     "interactions": ""
                 }
             ],
-            "bindings": [
-                {
-                    "name": "",
-                    "id": "7d897b2a-3e15-4ed7-8828-3c77ba679f19",
-                    "path": "<Keyboard>/1",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Spawn1",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "24a34cc6-cb9d-492d-b451-0cbe6f7eb010",
-                    "path": "<Keyboard>/2",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Spawn2",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "691bc94b-b371-4e30-9b37-89dd666051c6",
-                    "path": "<Keyboard>/3",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Spawn3",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "94d9bee0-f2ed-41f8-a29a-98e53b9868b8",
-                    "path": "<Keyboard>/4",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Spawn4",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "bf0df2c3-4382-4565-a183-4a008f9c9acd",
-                    "path": "<Keyboard>/5",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Spawn5",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "9fab6b8e-6058-45cd-b522-b180aefe5cdb",
-                    "path": "<Keyboard>/6",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Spawn6",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                }
-            ]
+            "bindings": []
         }
     ],
     "controlSchemes": []

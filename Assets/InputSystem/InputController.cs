@@ -43,7 +43,7 @@ public class @InputController : IInputActionCollection, IDisposable
                     ""interactions"": ""Press(behavior=2)""
                 },
                 {
-                    ""name"": ""StickyArm"",
+                    ""name"": ""StickyArmActive"",
                     ""type"": ""Button"",
                     ""id"": ""5e927169-b2f3-4f0b-b4d1-c3fa84184ac6"",
                     ""expectedControlType"": ""Button"",
@@ -51,12 +51,12 @@ public class @InputController : IInputActionCollection, IDisposable
                     ""interactions"": ""Press""
                 },
                 {
-                    ""name"": ""PivotStickyArm"",
+                    ""name"": ""StickyArmUndo"",
                     ""type"": ""Button"",
-                    ""id"": ""2e08e7b2-33c9-4eea-91e4-43a90589fd58"",
+                    ""id"": ""e427c478-35ae-4e50-8a1a-9e9ea4d54253"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": ""Press""
+                    ""interactions"": ""Press(behavior=1)""
                 }
             ],
             ""bindings"": [
@@ -96,22 +96,22 @@ public class @InputController : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""0100e706-3a6d-4665-b1e0-809322d90ff3"",
-                    ""path"": ""<Keyboard>/space"",
+                    ""path"": ""<Keyboard>/shift"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""StickyArm"",
+                    ""action"": ""StickyArmActive"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""612da263-59e5-42cb-ad80-8e6ceb902426"",
+                    ""id"": ""43f35a71-092c-4f47-b24c-ee3444a8d1ae"",
                     ""path"": ""<Keyboard>/shift"",
-                    ""interactions"": ""Press"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""PivotStickyArm"",
+                    ""action"": ""StickyArmUndo"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -170,74 +170,7 @@ public class @InputController : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 }
             ],
-            ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""7d897b2a-3e15-4ed7-8828-3c77ba679f19"",
-                    ""path"": ""<Keyboard>/1"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Spawn1"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""24a34cc6-cb9d-492d-b451-0cbe6f7eb010"",
-                    ""path"": ""<Keyboard>/2"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Spawn2"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""691bc94b-b371-4e30-9b37-89dd666051c6"",
-                    ""path"": ""<Keyboard>/3"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Spawn3"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""94d9bee0-f2ed-41f8-a29a-98e53b9868b8"",
-                    ""path"": ""<Keyboard>/4"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Spawn4"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""bf0df2c3-4382-4565-a183-4a008f9c9acd"",
-                    ""path"": ""<Keyboard>/5"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Spawn5"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""9fab6b8e-6058-45cd-b522-b180aefe5cdb"",
-                    ""path"": ""<Keyboard>/6"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Spawn6"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                }
-            ]
+            ""bindings"": []
         }
     ],
     ""controlSchemes"": []
@@ -247,8 +180,8 @@ public class @InputController : IInputActionCollection, IDisposable
         m_Player_Arm1 = m_Player.FindAction("Arm1", throwIfNotFound: true);
         m_Player_Arm2 = m_Player.FindAction("Arm2", throwIfNotFound: true);
         m_Player_Arm3 = m_Player.FindAction("Arm3", throwIfNotFound: true);
-        m_Player_StickyArm = m_Player.FindAction("StickyArm", throwIfNotFound: true);
-        m_Player_PivotStickyArm = m_Player.FindAction("PivotStickyArm", throwIfNotFound: true);
+        m_Player_StickyArmActive = m_Player.FindAction("StickyArmActive", throwIfNotFound: true);
+        m_Player_StickyArmUndo = m_Player.FindAction("StickyArmUndo", throwIfNotFound: true);
         // SpawnerPos
         m_SpawnerPos = asset.FindActionMap("SpawnerPos", throwIfNotFound: true);
         m_SpawnerPos_Spawn1 = m_SpawnerPos.FindAction("Spawn1", throwIfNotFound: true);
@@ -309,8 +242,8 @@ public class @InputController : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_Arm1;
     private readonly InputAction m_Player_Arm2;
     private readonly InputAction m_Player_Arm3;
-    private readonly InputAction m_Player_StickyArm;
-    private readonly InputAction m_Player_PivotStickyArm;
+    private readonly InputAction m_Player_StickyArmActive;
+    private readonly InputAction m_Player_StickyArmUndo;
     public struct PlayerActions
     {
         private @InputController m_Wrapper;
@@ -318,8 +251,8 @@ public class @InputController : IInputActionCollection, IDisposable
         public InputAction @Arm1 => m_Wrapper.m_Player_Arm1;
         public InputAction @Arm2 => m_Wrapper.m_Player_Arm2;
         public InputAction @Arm3 => m_Wrapper.m_Player_Arm3;
-        public InputAction @StickyArm => m_Wrapper.m_Player_StickyArm;
-        public InputAction @PivotStickyArm => m_Wrapper.m_Player_PivotStickyArm;
+        public InputAction @StickyArmActive => m_Wrapper.m_Player_StickyArmActive;
+        public InputAction @StickyArmUndo => m_Wrapper.m_Player_StickyArmUndo;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -338,12 +271,12 @@ public class @InputController : IInputActionCollection, IDisposable
                 @Arm3.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnArm3;
                 @Arm3.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnArm3;
                 @Arm3.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnArm3;
-                @StickyArm.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnStickyArm;
-                @StickyArm.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnStickyArm;
-                @StickyArm.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnStickyArm;
-                @PivotStickyArm.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPivotStickyArm;
-                @PivotStickyArm.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPivotStickyArm;
-                @PivotStickyArm.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPivotStickyArm;
+                @StickyArmActive.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnStickyArmActive;
+                @StickyArmActive.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnStickyArmActive;
+                @StickyArmActive.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnStickyArmActive;
+                @StickyArmUndo.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnStickyArmUndo;
+                @StickyArmUndo.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnStickyArmUndo;
+                @StickyArmUndo.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnStickyArmUndo;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -357,12 +290,12 @@ public class @InputController : IInputActionCollection, IDisposable
                 @Arm3.started += instance.OnArm3;
                 @Arm3.performed += instance.OnArm3;
                 @Arm3.canceled += instance.OnArm3;
-                @StickyArm.started += instance.OnStickyArm;
-                @StickyArm.performed += instance.OnStickyArm;
-                @StickyArm.canceled += instance.OnStickyArm;
-                @PivotStickyArm.started += instance.OnPivotStickyArm;
-                @PivotStickyArm.performed += instance.OnPivotStickyArm;
-                @PivotStickyArm.canceled += instance.OnPivotStickyArm;
+                @StickyArmActive.started += instance.OnStickyArmActive;
+                @StickyArmActive.performed += instance.OnStickyArmActive;
+                @StickyArmActive.canceled += instance.OnStickyArmActive;
+                @StickyArmUndo.started += instance.OnStickyArmUndo;
+                @StickyArmUndo.performed += instance.OnStickyArmUndo;
+                @StickyArmUndo.canceled += instance.OnStickyArmUndo;
             }
         }
     }
@@ -445,8 +378,8 @@ public class @InputController : IInputActionCollection, IDisposable
         void OnArm1(InputAction.CallbackContext context);
         void OnArm2(InputAction.CallbackContext context);
         void OnArm3(InputAction.CallbackContext context);
-        void OnStickyArm(InputAction.CallbackContext context);
-        void OnPivotStickyArm(InputAction.CallbackContext context);
+        void OnStickyArmActive(InputAction.CallbackContext context);
+        void OnStickyArmUndo(InputAction.CallbackContext context);
     }
     public interface ISpawnerPosActions
     {
