@@ -21,4 +21,4 @@ MonoBehaviour:
   accelerationRetract: 40
   impactMode: 0
   forceMultiplier: 1
-  rotationMultiplier: 0.1
+  rotationMultiplier: 0

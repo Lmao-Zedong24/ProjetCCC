@@ -13,9 +13,12 @@ MonoBehaviour:
   m_Name: TestRiga
   m_EditorClassIdentifier: 
   maxLenght: 10
-  minSpeedExtend: 20
-  maxSpeedExtend: 50
-  accelerationExtend: 30
-  minSpeedRetract: 20
-  maxSpeedRetract: 20
+  minSpeedExtend: 30
+  maxSpeedExtend: 55
+  accelerationExtend: 40
+  minSpeedRetract: 30
+  maxSpeedRetract: 30
   accelerationRetract: 40
+  impactMode: 0
+  forceMultiplier: 1
+  rotationMultiplier: 0
