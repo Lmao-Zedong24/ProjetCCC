@@ -28,6 +28,22 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press(behavior=2)"
+                },
+                {
+                    "name": "StickyArmActive",
+                    "type": "Button",
+                    "id": "5e927169-b2f3-4f0b-b4d1-c3fa84184ac6",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
+                },
+                {
+                    "name": "StickyArmUndo",
+                    "type": "Button",
+                    "id": "e427c478-35ae-4e50-8a1a-9e9ea4d54253",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=1)"
                 }
             ],
             "bindings": [
@@ -61,6 +77,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Arm1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0100e706-3a6d-4665-b1e0-809322d90ff3",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "StickyArmActive",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "43f35a71-092c-4f47-b24c-ee3444a8d1ae",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "StickyArmUndo",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

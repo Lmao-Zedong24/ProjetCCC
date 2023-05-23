@@ -41,6 +41,22 @@ public class @InputController : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Press(behavior=2)""
+                },
+                {
+                    ""name"": ""StickyArmActive"",
+                    ""type"": ""Button"",
+                    ""id"": ""5e927169-b2f3-4f0b-b4d1-c3fa84184ac6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press""
+                },
+                {
+                    ""name"": ""StickyArmUndo"",
+                    ""type"": ""Button"",
+                    ""id"": ""e427c478-35ae-4e50-8a1a-9e9ea4d54253"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=1)""
                 }
             ],
             ""bindings"": [
@@ -74,6 +90,28 @@ public class @InputController : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Arm1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0100e706-3a6d-4665-b1e0-809322d90ff3"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""StickyArmActive"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""43f35a71-092c-4f47-b24c-ee3444a8d1ae"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""StickyArmUndo"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -209,6 +247,8 @@ public class @InputController : IInputActionCollection, IDisposable
         m_Player_Arm1 = m_Player.FindAction("Arm1", throwIfNotFound: true);
         m_Player_Arm2 = m_Player.FindAction("Arm2", throwIfNotFound: true);
         m_Player_Arm3 = m_Player.FindAction("Arm3", throwIfNotFound: true);
+        m_Player_StickyArmActive = m_Player.FindAction("StickyArmActive", throwIfNotFound: true);
+        m_Player_StickyArmUndo = m_Player.FindAction("StickyArmUndo", throwIfNotFound: true);
         // SpawnerPos
         m_SpawnerPos = asset.FindActionMap("SpawnerPos", throwIfNotFound: true);
         m_SpawnerPos_Spawn1 = m_SpawnerPos.FindAction("Spawn1", throwIfNotFound: true);
@@ -269,6 +309,8 @@ public class @InputController : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_Arm1;
     private readonly InputAction m_Player_Arm2;
     private readonly InputAction m_Player_Arm3;
+    private readonly InputAction m_Player_StickyArmActive;
+    private readonly InputAction m_Player_StickyArmUndo;
     public struct PlayerActions
     {
         private @InputController m_Wrapper;
@@ -276,6 +318,8 @@ public class @InputController : IInputActionCollection, IDisposable
         public InputAction @Arm1 => m_Wrapper.m_Player_Arm1;
         public InputAction @Arm2 => m_Wrapper.m_Player_Arm2;
         public InputAction @Arm3 => m_Wrapper.m_Player_Arm3;
+        public InputAction @StickyArmActive => m_Wrapper.m_Player_StickyArmActive;
+        public InputAction @StickyArmUndo => m_Wrapper.m_Player_StickyArmUndo;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -294,6 +338,12 @@ public class @InputController : IInputActionCollection, IDisposable
                 @Arm3.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnArm3;
                 @Arm3.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnArm3;
                 @Arm3.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnArm3;
+                @StickyArmActive.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnStickyArmActive;
+                @StickyArmActive.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnStickyArmActive;
+                @StickyArmActive.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnStickyArmActive;
+                @StickyArmUndo.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnStickyArmUndo;
+                @StickyArmUndo.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnStickyArmUndo;
+                @StickyArmUndo.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnStickyArmUndo;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -307,6 +357,12 @@ public class @InputController : IInputActionCollection, IDisposable
                 @Arm3.started += instance.OnArm3;
                 @Arm3.performed += instance.OnArm3;
                 @Arm3.canceled += instance.OnArm3;
+                @StickyArmActive.started += instance.OnStickyArmActive;
+                @StickyArmActive.performed += instance.OnStickyArmActive;
+                @StickyArmActive.canceled += instance.OnStickyArmActive;
+                @StickyArmUndo.started += instance.OnStickyArmUndo;
+                @StickyArmUndo.performed += instance.OnStickyArmUndo;
+                @StickyArmUndo.canceled += instance.OnStickyArmUndo;
             }
         }
     }
@@ -389,6 +445,8 @@ public class @InputController : IInputActionCollection, IDisposable
         void OnArm1(InputAction.CallbackContext context);
         void OnArm2(InputAction.CallbackContext context);
         void OnArm3(InputAction.CallbackContext context);
+        void OnStickyArmActive(InputAction.CallbackContext context);
+        void OnStickyArmUndo(InputAction.CallbackContext context);
     }
     public interface ISpawnerPosActions
     {
