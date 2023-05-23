@@ -76,8 +76,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278253055
-  m_fontColor: {r: 1, g: 0.9622458, b: 0, a: 1}
+    rgba: 4291887359
+  m_fontColor: {r: 1, g: 0, b: 0.8194933, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -282,7 +282,7 @@ GameObject:
   - component: {fileID: 2005836749085045690}
   - component: {fileID: 2005836749085045691}
   m_Layer: 5
-  m_Name: W (1)
+  m_Name: D
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -344,8 +344,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4289200383
-  m_fontColor: {r: 1, g: 0, b: 0.6576271, a: 1}
+    rgba: 4278254847
+  m_fontColor: {r: 1, g: 0.9886322, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
