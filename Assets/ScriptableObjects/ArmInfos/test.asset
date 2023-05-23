@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: test
   m_EditorClassIdentifier: 
   maxLenght: 10
-  minSpeedExtend: 10
-  maxSpeedExtend: 40
-  accelerationExtend: 10
+  minSpeedExtend: 20
+  maxSpeedExtend: 50
+  accelerationExtend: 30
   minSpeedRetract: 20
   maxSpeedRetract: 20
   accelerationRetract: 40

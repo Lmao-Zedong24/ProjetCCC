@@ -25,13 +25,13 @@ public class Arm : MonoBehaviour
     private Vector2 localDirectionVec;
     private Vector3 staticPos;
 
-    bool hasCollission;
     RigidbodyConstraints mainConstraints;
 
 
     public EArmState armState { get; private set; }
-
+    public bool hasCollission { get; private set; }
     public Collider colHand { get; private set; }
+
     Transform   hand;
     Rigidbody mainBody;
     Rigidbody   rbHand;
@@ -256,6 +256,13 @@ public class Arm : MonoBehaviour
             currentVelocity = MyMoveTowards2D(currentVelocity, desiredVelocity, maxSpeedChange);
         }
 
+
+        if (hasCollission)
+        {
+            mainBody.AddForce(transform.rotation * -currentVelocity, ForceMode.VelocityChange); //world
+            return;
+        }
+
         Vector2 posLocal = (Vector2)rbHand.transform.localPosition;
         MyLerp2D(ref posLocal, currentVelocity, Time.deltaTime);
 
@@ -279,7 +286,6 @@ public class Arm : MonoBehaviour
         {
             Vector2 overshootVec = -overshootLenght * localDirectionVec;
             posLocal += overshootVec;
-            Debug.DrawLine(mainBody.position, mainBody.position + transform.rotation * overshootVec, Color.magenta);
             mainBody.AddForce(transform.rotation * overshootVec, ForceMode.VelocityChange); //world
         }
 
@@ -334,6 +340,11 @@ public class Arm : MonoBehaviour
 
 
     private void OnCollisionEnter(Collision collision)
+    {
+        hasCollission |= true;
+    }
+
+    private void OnCollisionStay(Collision collision)
     {
         hasCollission |= true;
     }

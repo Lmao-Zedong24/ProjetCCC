@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour, IPlayerActions
 {
     @InputController _controller;
     Arm[]       _arms;
-    Transform   _mainBody;
+    Rigidbody   _mainBody;
     Collider    _collider;
 
     //arm coordinates (x,y) :
@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviour, IPlayerActions
         _controller.Player.SetCallbacks(this);
 
         _arms = GetComponentsInChildren<Arm>();
+        _mainBody = GetComponent<Rigidbody>();
         _collider = GetComponent<Collider>();
 
         float radius =  transform.localScale.x / 4; 
@@ -58,6 +59,21 @@ public class PlayerController : MonoBehaviour, IPlayerActions
         //    }
         //}
     }
+    void FixedUpdate()
+    {
+        foreach(Arm arm in _arms)
+        {
+            if (_arms[0].hasCollission)
+            {
+                _mainBody.useGravity = false;
+                break;
+            }
+
+            _mainBody.useGravity = true;
+        }
+    }
+
+
     void Update()
     {
         InteractArm(_controller.Player.Arm1.phase, 0);

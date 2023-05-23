@@ -20,7 +20,7 @@ public class ArmInfo : ScriptableObject
     public float maxSpeedExtend = 40f;
     public float accelerationExtend = 10f;
 
-    [Header("Extend")]
+    [Header("Retract")]
     public float minSpeedRetract = 20f;
     public float maxSpeedRetract = 20f;
     public float accelerationRetract = 40f;
