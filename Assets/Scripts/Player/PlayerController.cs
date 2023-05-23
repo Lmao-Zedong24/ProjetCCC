@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR;
 using static InputController;
+using UnityEditor.UIElements;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -19,8 +20,7 @@ public class PlayerController : MonoBehaviour, IPlayerActions
     Rigidbody   _mainBody;
     Collider    _collider;
 
-    bool _extendSticky;
-
+    bool _stickyTogle;
     //arm coordinates (x,y) :
     //  R * (cos(0), sin(0))
     //  R * (cos(2PI/3), sin(2PI/3))
@@ -136,36 +136,49 @@ public class PlayerController : MonoBehaviour, IPlayerActions
         InteractArm(context, 2);
     }
 
-    public void OnStickyArmActive(InputAction.CallbackContext context)
+    public void OnStickyArm(InputAction.CallbackContext context)
     {
         if (!context.started)
             return;
 
+        if(_stickyTogle)
+        {
+            foreach (var arm in _arms)
+            {
+                if (arm.armState == Arm.EArmState.StaticOut)
+                {
+                    arm.isSticky = true;
+                    _stickyTogle = false;
+                }
+            }
+            return;
+        }
+
+        _stickyTogle = true;
+
         foreach (var arm in _arms)
         {
-            if (arm.armState == Arm.EArmState.StaticOut)
-                arm.isSticky = true;
+            if(arm.isSticky)
+            {
+                arm.isSticky = false;
+            }
         }
     }
 
-    public void OnStickyArmUndo(InputAction.CallbackContext context)
+    public void OnPivotStickyArm(InputAction.CallbackContext context)
     {
-        if (!context.canceled)
-            return;
-
-        foreach (var arm in _arms)
-        {
-            arm.isSticky = false;
-        }
+        //throw new System.NotImplementedException();
     }
 
     #region Editor
 #if UNITY_EDITOR
 
-    [SerializeField] private bool GUIShowRetract = true;
+    [SerializeField] private bool GUIShowRetract = false;
+    [SerializeField] private bool GUIShowImpact = false;
     [SerializeField] private bool GUIShowExtend = true;
 
     [CustomEditor(typeof(PlayerController))]
+    [CanEditMultipleObjects]
     public class PlayerControllerEditor : Editor
     {
         private SerializedProperty _armInfoProperty;
@@ -210,6 +223,19 @@ public class PlayerController : MonoBehaviour, IPlayerActions
                     player.armInfo.accelerationRetract = EditorGUILayout.Slider("Acceleration", player.armInfo.accelerationRetract, 0f, 100f);
                     EditorGUI.indentLevel--;
                     EditorGUILayout.Space();
+                }
+
+                if (player.GUIShowImpact = EditorGUILayout.Foldout(player.GUIShowImpact, "Impact"))
+                {
+                    EditorGUI.indentLevel++;
+                    player.armInfo.forceMultiplier = EditorGUILayout.FloatField("Force Multiplier", player.armInfo.forceMultiplier);
+                    player.armInfo.rotationMultiplier = EditorGUILayout.FloatField("Rotation Multiplier", player.armInfo.rotationMultiplier);
+                    player.armInfo.impactMode = (ArmInfo.ImpactMode)EditorGUILayout.EnumPopup("Impact Mode", player.armInfo.impactMode);
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.Vector2Field("Impact Force", player.armInfo.lastImpactForce, GUILayout.MaxWidth(700f));
+                    EditorGUILayout.FloatField(player.armInfo.lastImpactForce.magnitude);
+                    EditorGUILayout.EndHorizontal();
+                    EditorGUI.indentLevel++;
                 }
             }
 
