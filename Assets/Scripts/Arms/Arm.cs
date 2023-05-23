@@ -259,7 +259,7 @@ public class Arm : MonoBehaviour
             switch (_armInfo.impactMode)
             {
                 case ArmInfo.ImpactMode.ArmVelocity:
-                    force = transform.rotation * currentVelocity * -Time.deltaTime;
+                    force = transform.rotation * currentVelocity * -_armInfo.forceMultiplier * Time.deltaTime;
                     break;
 
                 case ArmInfo.ImpactMode.SetValue:
