@@ -145,8 +145,7 @@ public class PlayerController : MonoBehaviour, IPlayerActions
         {
             foreach (var arm in _arms)
             {
-                if (arm.armState == Arm.EArmState.StaticOut ||
-                    arm.armState == Arm.EArmState.Extend)
+                if (arm.armState == Arm.EArmState.StaticOut)
                 {
                     arm.isSticky = true;
                     _stickyTogle = false;
