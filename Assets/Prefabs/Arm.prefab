@@ -352,6 +352,7 @@ GameObject:
   - component: {fileID: 699344276604395136}
   - component: {fileID: 5873971002400610195}
   - component: {fileID: 5351832983575504126}
+  - component: {fileID: 4628629283516348493}
   m_Layer: 0
   m_Name: HandSphere
   m_TagString: Hand
@@ -466,6 +467,18 @@ FixedJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!114 &4628629283516348493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4740845969635163819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dfc26791155d7314fab425c20936fc1c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5168202816817581366
 GameObject:
   m_ObjectHideFlags: 0
@@ -497,7 +510,6 @@ Transform:
   - {fileID: 5836178703248197882}
   - {fileID: 1327454019932960318}
   - {fileID: 3039361497230732712}
-  - {fileID: 1327454019932960318}
   - {fileID: 2124027825836228781}
   - {fileID: 5443737125551747733}
   m_Father: {fileID: 0}

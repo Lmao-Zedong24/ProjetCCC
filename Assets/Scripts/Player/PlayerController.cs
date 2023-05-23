@@ -16,8 +16,10 @@ public class PlayerController : MonoBehaviour, IPlayerActions
 {
     @InputController _controller;
     Arm[]       _arms;
-    Transform   _mainBody;
+    Rigidbody   _mainBody;
     Collider    _collider;
+
+    bool _extendSticky;
 
     //arm coordinates (x,y) :
     //  R * (cos(0), sin(0))
@@ -34,6 +36,7 @@ public class PlayerController : MonoBehaviour, IPlayerActions
         _controller.Player.SetCallbacks(this);
 
         _arms = GetComponentsInChildren<Arm>();
+        _mainBody = GetComponent<Rigidbody>();
         _collider = GetComponent<Collider>();
 
         float radius =  transform.localScale.x / 4; 
@@ -44,7 +47,7 @@ public class PlayerController : MonoBehaviour, IPlayerActions
             _arms[i].SetSpawnLocalPos(new Vector2(   radius * Mathf.Cos(val),
                                                     radius * Mathf.Sin(val)));
 
-            Physics.IgnoreCollision(_collider, _arms[i].colHand);
+            Physics.IgnoreCollision(_collider, _arms[i].GetComponentInChildren<Collider>());
         }
 
         //var allTrans = GetComponentsInChildren<Transform>();
@@ -58,14 +61,29 @@ public class PlayerController : MonoBehaviour, IPlayerActions
         //    }
         //}
     }
+    void FixedUpdate()
+    {
+        foreach(Arm arm in _arms)
+        {
+            if (arm.isSticking)
+            {
+                _mainBody.useGravity = false;
+                _mainBody.isKinematic = true;
+                break;
+            }
+
+            _mainBody.useGravity = true;
+            _mainBody.isKinematic = false;
+        }
+    }
+
+
     void Update()
     {
         InteractArm(_controller.Player.Arm1.phase, 0);
         InteractArm(_controller.Player.Arm1.phase, 1);
         InteractArm(_controller.Player.Arm1.phase, 2);
 
-        //foreach (var arm in _arms)
-        //    Debug.DrawLine(transform.position, arm.transform.position, Color.red, 1f);
 
         //transform.position = _mainBody.position;
         //transform.rotation = _mainBody.rotation;
@@ -116,6 +134,29 @@ public class PlayerController : MonoBehaviour, IPlayerActions
     public void OnArm3(InputAction.CallbackContext context)
     {
         InteractArm(context, 2);
+    }
+
+    public void OnStickyArmActive(InputAction.CallbackContext context)
+    {
+        if (!context.started)
+            return;
+
+        foreach (var arm in _arms)
+        {
+            if (arm.armState == Arm.EArmState.StaticOut)
+                arm.isSticky = true;
+        }
+    }
+
+    public void OnStickyArmUndo(InputAction.CallbackContext context)
+    {
+        if (!context.canceled)
+            return;
+
+        foreach (var arm in _arms)
+        {
+            arm.isSticky = false;
+        }
     }
 
     #region Editor
@@ -177,6 +218,11 @@ public class PlayerController : MonoBehaviour, IPlayerActions
                 EditorGUILayout.EnumFlagsField("Arm 1", player._arms[0].armState);
                 EditorGUILayout.EnumFlagsField("Arm 2", player._arms[1].armState);
                 EditorGUILayout.EnumFlagsField("Arm 3", player._arms[2].armState);
+                EditorGUILayout.Space();
+
+                EditorGUILayout.Toggle("Arm 1", player._arms[0].isSticking);
+                EditorGUILayout.Toggle("Arm 2", player._arms[1].isSticking);
+                EditorGUILayout.Toggle("Arm 3", player._arms[2].isSticking);
                 EditorGUILayout.Space();
             }
 

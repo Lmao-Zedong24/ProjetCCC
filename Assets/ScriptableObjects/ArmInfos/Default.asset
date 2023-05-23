@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxLenght: 10
   minSpeedExtend: 10
-  maxSpeedExtend: 40
-  accelerationExtend: 10
+  maxSpeedExtend: 10
+  accelerationExtend: 0
   minSpeedRetract: 20
   maxSpeedRetract: 20
   accelerationRetract: 40
