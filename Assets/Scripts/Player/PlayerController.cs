@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR;
 using static InputController;
+using UnityEditor.UIElements;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -19,8 +20,7 @@ public class PlayerController : MonoBehaviour, IPlayerActions
     Rigidbody   _mainBody;
     Collider    _collider;
 
-    bool _extendSticky;
-
+    bool _stickyTogle;
     //arm coordinates (x,y) :
     //  R * (cos(0), sin(0))
     //  R * (cos(2PI/3), sin(2PI/3))
@@ -39,15 +39,24 @@ public class PlayerController : MonoBehaviour, IPlayerActions
         _mainBody = GetComponent<Rigidbody>();
         _collider = GetComponent<Collider>();
 
-        float radius =  transform.localScale.x / 4; 
-        float teta =    Mathf.PI / 2; 
-        for(int i = 0; i < _arms.Length; i++)
+        float radius = transform.localScale.x / 3.5f;
+        float teta = Mathf.PI / 6 + 2 * Mathf.PI / 3;
+        for (int i = 0; i < _arms.Length; i++)
         {
-            float val = teta - 2 * Mathf.PI * i / 3f;
-            _arms[i].SetSpawnLocalPos(new Vector2(   radius * Mathf.Cos(val),
+            float val = teta - 2 * Mathf.PI * i / (float)_arms.Length;
+            //_arms[i].transform.rotation = Quaternion.identity;
+            _arms[i].SetSpawnLocalPos(new Vector2(radius * Mathf.Cos(val),
                                                     radius * Mathf.Sin(val)));
 
-            Physics.IgnoreCollision(_collider, _arms[i].GetComponentInChildren<Collider>());
+            var childColliders = _arms[i].GetComponentsInChildren<Collider>();
+
+            for (int j = 0; j < childColliders.Length; j++)
+            {
+                Physics.IgnoreCollision(_collider, childColliders[j]);
+
+                for (int k = j + 1; k < childColliders.Length; k++)
+                    Physics.IgnoreCollision(childColliders[j], childColliders[k]);
+            }
         }
 
         //var allTrans = GetComponentsInChildren<Transform>();
@@ -136,36 +145,50 @@ public class PlayerController : MonoBehaviour, IPlayerActions
         InteractArm(context, 2);
     }
 
-    public void OnStickyArmActive(InputAction.CallbackContext context)
+    public void OnStickyArm(InputAction.CallbackContext context)
     {
         if (!context.started)
             return;
 
+        if(_stickyTogle)
+        {
+            foreach (var arm in _arms)
+            {
+                if (arm.armState == Arm.EArmState.StaticOut ||
+                    arm.armState == Arm.EArmState.Extend)
+                {
+                    arm.isSticky = true;
+                    _stickyTogle = false;
+                }
+            }
+            return;
+        }
+
+        _stickyTogle = true;
+
         foreach (var arm in _arms)
         {
-            if (arm.armState == Arm.EArmState.StaticOut)
-                arm.isSticky = true;
+            if(arm.isSticky)
+            {
+                arm.isSticky = false;
+            }
         }
     }
 
-    public void OnStickyArmUndo(InputAction.CallbackContext context)
+    public void OnPivotStickyArm(InputAction.CallbackContext context)
     {
-        if (!context.canceled)
-            return;
-
-        foreach (var arm in _arms)
-        {
-            arm.isSticky = false;
-        }
+        //throw new System.NotImplementedException();
     }
 
     #region Editor
 #if UNITY_EDITOR
 
-    [SerializeField] private bool GUIShowRetract = true;
+    [SerializeField] private bool GUIShowRetract = false;
+    [SerializeField] private bool GUIShowImpact = false;
     [SerializeField] private bool GUIShowExtend = true;
 
     [CustomEditor(typeof(PlayerController))]
+    [CanEditMultipleObjects]
     public class PlayerControllerEditor : Editor
     {
         private SerializedProperty _armInfoProperty;
@@ -210,6 +233,19 @@ public class PlayerController : MonoBehaviour, IPlayerActions
                     player.armInfo.accelerationRetract = EditorGUILayout.Slider("Acceleration", player.armInfo.accelerationRetract, 0f, 100f);
                     EditorGUI.indentLevel--;
                     EditorGUILayout.Space();
+                }
+
+                if (player.GUIShowImpact = EditorGUILayout.Foldout(player.GUIShowImpact, "Impact"))
+                {
+                    EditorGUI.indentLevel++;
+                    player.armInfo.forceMultiplier = EditorGUILayout.FloatField("Force Multiplier", player.armInfo.forceMultiplier);
+                    player.armInfo.rotationMultiplier = EditorGUILayout.FloatField("Rotation Multiplier", player.armInfo.rotationMultiplier);
+                    player.armInfo.impactMode = (ArmInfo.ImpactMode)EditorGUILayout.EnumPopup("Impact Mode", player.armInfo.impactMode);
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.Vector2Field("Impact Force", player.armInfo.lastImpactForce, GUILayout.MaxWidth(700f));
+                    EditorGUILayout.FloatField(player.armInfo.lastImpactForce.magnitude);
+                    EditorGUILayout.EndHorizontal();
+                    EditorGUI.indentLevel++;
                 }
             }
 

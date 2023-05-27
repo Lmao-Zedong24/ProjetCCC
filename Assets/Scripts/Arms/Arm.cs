@@ -2,19 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using TMPro.EditorUtilities;
 using UnityEngine;
 
 public class Arm : MonoBehaviour
 {
     const float COLLISION_BUFFER_SEC = 0.25f;
-
-    private float maxLenght = 10f;
-    private float minSpeedExtend = 10f;
-    private float maxSpeedExtend = 40f;
-    private float accelerationExtend = 10f;
-    private float minSpeedRetract = 20f;
-    private float maxSpeedRetract = 20f;
-    private float accelerationRetract = 40f;
 
     private float currentMinSpeed;
     private float currentMaxSpeed;
@@ -31,14 +24,13 @@ public class Arm : MonoBehaviour
     Rigidbody   rbHand;
     FixedJoint  joint;
 
+    ArmInfo _armInfo;
 
     public bool hasCollission { get => colHand.hasCollision; }
     public bool isSticky { get; set; }
     public bool isSticking { get => isSticky && hasCollission; }
     public bool isStaticState { get => armState == EArmState.StaticIn || armState == EArmState.StaticOut; }
     public EArmState armState { get; private set; }
-
-    
 
     public enum EArmState
     {
@@ -52,6 +44,7 @@ public class Arm : MonoBehaviour
     void Awake()
     {
         SetupRigidbodies();
+        SetupArmState(EArmState.StaticIn);
         //SetupArmInfo();
     }
 
@@ -122,7 +115,7 @@ public class Arm : MonoBehaviour
 
     private bool StopExtend(float dot)
     {
-        return (armState == EArmState.Extend && dot >= maxLenght);
+        return (armState == EArmState.Extend && dot >= _armInfo.maxLenght);
     }
 
     private bool StopRetract(float dot)
@@ -137,18 +130,7 @@ public class Arm : MonoBehaviour
 
     public void SetupArmInfo(ArmInfo armInfo)
     {
-        if (armInfo == null)
-            return;
-
-        maxLenght = armInfo.maxLenght;
-        
-        minSpeedExtend = armInfo.minSpeedExtend;
-        maxSpeedExtend = armInfo.maxSpeedExtend;
-        accelerationExtend = armInfo.accelerationExtend;
-        
-        minSpeedRetract = armInfo.minSpeedRetract;
-        maxSpeedRetract = armInfo.maxSpeedRetract;
-        accelerationRetract = armInfo.accelerationRetract;
+        _armInfo = armInfo;
     }
 
     public void SetSpawnLocalPos(Vector2 localPos)
@@ -170,21 +152,23 @@ public class Arm : MonoBehaviour
         {
             case EArmState.StaticIn: //can do more here
                 isSticky = false;
+                float dot = Vector2.Dot(mainBody.rotation * localDirectionVec, new Vector2(1f, 0f));
+                mainBody.AddRelativeTorque(0f, 0f, (dot > 0 ? 1 : -1) * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
                 break;
 
             case EArmState.StaticOut:
                 break;
 
             case EArmState.Extend:
-                currentMinSpeed = minSpeedExtend;
-                currentMaxSpeed = maxSpeedExtend;
-                currentAcceleration = accelerationExtend;
+                currentMinSpeed = _armInfo.minSpeedExtend;
+                currentMaxSpeed = _armInfo.maxSpeedExtend;
+                currentAcceleration = _armInfo.accelerationExtend;
                 break;
 
             case EArmState.Retract:
-                currentMinSpeed = minSpeedRetract;
-                currentMaxSpeed = maxSpeedRetract;
-                currentAcceleration = accelerationRetract;
+                currentMinSpeed = _armInfo.minSpeedRetract;
+                currentMaxSpeed = _armInfo.maxSpeedRetract;
+                currentAcceleration = _armInfo.accelerationRetract;
                 mainBody.constraints = mainConstraints;
                 isSticky = false;
                 break;
@@ -223,7 +207,7 @@ public class Arm : MonoBehaviour
 
         SetupArmState(EArmState.Retract);
 
-        localDirectionVec = -(transform.localPosition.normalized);
+        localDirectionVec = -transform.localPosition.normalized;
         currentVelocity = new Vector2(0f, 0f);
 
         SetDisiredVelocity();
@@ -266,15 +250,33 @@ public class Arm : MonoBehaviour
         if (colHand.hasCollision ||
             (colHand.timeSinceCollisionSec < COLLISION_BUFFER_SEC && staticPosWorld.HasValue))
         {
-            if (!staticPosWorld.HasValue)
-                staticPosWorld = rbHand.transform.position;
-
+            staticPosWorld ??= rbHand.transform.position;
             rbHand.transform.position = staticPosWorld.Value;
             mainBody.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
-            mainBody.AddForce(transform.rotation * currentVelocity * -Time.deltaTime, ForceMode.VelocityChange); //world
+
+            Vector2 force = new Vector2();
+            switch (_armInfo.impactMode)
+            {
+                case ArmInfo.ImpactMode.ArmVelocity:
+                    force = transform.rotation * currentVelocity * -_armInfo.forceMultiplier * Time.deltaTime;
+                    break;
+
+                case ArmInfo.ImpactMode.SetValue:
+                    force = transform.rotation * currentVelocity.normalized * -_armInfo.forceMultiplier;
+                    break;
+
+                case ArmInfo.ImpactMode.ArmExtendLength:
+                    force = transform.rotation * currentVelocity.normalized * -_armInfo.forceMultiplier * (_armInfo.maxLenght - ArmLengthDot()); //world
+                    SetupArmState(EArmState.Retract);
+                    break;
+            }
+            mainBody.AddForce((Vector3)force, ForceMode.VelocityChange);
+            _armInfo.lastImpactForce = force;
+
             return;
         }
 
+        staticPosWorld = null;
         mainBody.constraints = mainConstraints;
 
 
