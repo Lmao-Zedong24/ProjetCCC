@@ -39,15 +39,24 @@ public class PlayerController : MonoBehaviour, IPlayerActions
         _mainBody = GetComponent<Rigidbody>();
         _collider = GetComponent<Collider>();
 
-        float radius =  transform.localScale.x / 4; 
-        float teta =    Mathf.PI / 2; 
-        for(int i = 0; i < _arms.Length; i++)
+        float radius = transform.localScale.x / 3.5f;
+        float teta = Mathf.PI / 6 + 2 * Mathf.PI / 3;
+        for (int i = 0; i < _arms.Length; i++)
         {
-            float val = teta - 2 * Mathf.PI * i / 3f;
-            _arms[i].SetSpawnLocalPos(new Vector2(   radius * Mathf.Cos(val),
+            float val = teta - 2 * Mathf.PI * i / (float)_arms.Length;
+            //_arms[i].transform.rotation = Quaternion.identity;
+            _arms[i].SetSpawnLocalPos(new Vector2(radius * Mathf.Cos(val),
                                                     radius * Mathf.Sin(val)));
 
-            Physics.IgnoreCollision(_collider, _arms[i].GetComponentInChildren<Collider>());
+            var childColliders = _arms[i].GetComponentsInChildren<Collider>();
+
+            for (int j = 0; j < childColliders.Length; j++)
+            {
+                Physics.IgnoreCollision(_collider, childColliders[j]);
+
+                for (int k = j + 1; k < childColliders.Length; k++)
+                    Physics.IgnoreCollision(childColliders[j], childColliders[k]);
+            }
         }
 
         //var allTrans = GetComponentsInChildren<Transform>();

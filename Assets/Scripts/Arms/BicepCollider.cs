@@ -1,0 +1,32 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class BicepCollider : MonoBehaviour
+{
+    Transform   _bottom;
+    Transform   _top;
+
+
+    // Start is called before the first frame update
+    void Awake()
+    {
+        _bottom =   transform.parent;
+        _top =      transform.parent.GetComponentInChildren<HandCollider>().transform;
+
+        //Vector3 upwards = transform.parent.position - transform.parent.parent.position;
+        //Vector3 forward = Quaternion.Euler(0, 0, -90f) * upwards;
+        //transform.rotation = Quaternion.LookRotation(upwards);
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        var vec = (_top.position - _bottom.position);
+        transform.position = _bottom.position + 0.4f * vec;
+        float val = vec.magnitude * 1.9f;
+        var newScale = transform.localScale;
+        newScale.y = val;
+        transform.localScale = newScale;
+    }
+}
