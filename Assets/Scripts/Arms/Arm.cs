@@ -44,6 +44,7 @@ public class Arm : MonoBehaviour
     void Awake()
     {
         SetupRigidbodies();
+        SetupArmState(EArmState.StaticIn);
         //SetupArmInfo();
     }
 
@@ -206,7 +207,7 @@ public class Arm : MonoBehaviour
 
         SetupArmState(EArmState.Retract);
 
-        localDirectionVec = -(transform.localPosition.normalized);
+        localDirectionVec = -transform.localPosition.normalized;
         currentVelocity = new Vector2(0f, 0f);
 
         SetDisiredVelocity();
@@ -249,9 +250,7 @@ public class Arm : MonoBehaviour
         if (colHand.hasCollision ||
             (colHand.timeSinceCollisionSec < COLLISION_BUFFER_SEC && staticPosWorld.HasValue))
         {
-            if (!staticPosWorld.HasValue)
-                staticPosWorld = rbHand.transform.position;
-
+            staticPosWorld ??= rbHand.transform.position;
             rbHand.transform.position = staticPosWorld.Value;
             mainBody.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
 
