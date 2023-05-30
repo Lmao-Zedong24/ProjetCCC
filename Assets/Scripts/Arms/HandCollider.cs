@@ -4,28 +4,28 @@ using UnityEngine;
 
 public class HandCollider : MonoBehaviour
 {
+    HashSet<GameObject> _collisions = new HashSet<GameObject>();
     public float timeSinceCollisionSec { get; private set; } = 0f;
     public bool hasCollision { get => _collisions.Count != 0; }
-
-    HashSet<GameObject> _collisions = new HashSet<GameObject>();
-
 
     void Update()
     {
         if (_collisions.Count != 0)
-        { return; }
+            return;
 
         timeSinceCollisionSec += Time.deltaTime;
     }
-    void OnCollisionEnter(UnityEngine.Collision collision)
+
+    void OnCollisionEnter(Collision collision)
     {
         if (_collisions.Count == 0)
             timeSinceCollisionSec = 0f;
-        
+
+        HandTagCollisionManager.Instance.InvokeTagCollisionFunc(collision);
         _collisions.Add(collision.gameObject);
     }
 
-    void OnCollisionExit(UnityEngine.Collision collision)
+    void OnCollisionExit(Collision collision)
     {
         _collisions.Remove(collision.gameObject);
     }

@@ -7,6 +7,7 @@ TagManager:
   - Hand
   - Arm
   - MainBody
+  - MovingCollider
   layers:
   - Default
   - TransparentFX
