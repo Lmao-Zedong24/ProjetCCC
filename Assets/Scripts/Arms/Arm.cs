@@ -18,15 +18,15 @@ public class Arm : MonoBehaviour
     private Vector3? staticPosWorld;
     private RigidbodyConstraints mainConstraints;
 
-    HandCollider colHand;
-    Transform   hand;
-    Rigidbody   mainBody;
-    Rigidbody   rbHand;
-    FixedJoint  joint;
+    HandCollider    _colHand;
+    Transform       _hand;
+    Rigidbody       _mainBody;
+    Rigidbody       _rbHand;
+    FixedJoint      _joint;
 
     ArmInfo _armInfo;
 
-    public bool hasCollission { get => colHand.hasCollision; }
+    public bool hasCollission { get => _colHand.hasCollision; }
     public bool isSticky { get; set; }
     public bool isSticking { get => isSticky && hasCollission; }
     public bool isStaticState { get => armState == EArmState.StaticIn || armState == EArmState.StaticOut; }
@@ -44,7 +44,9 @@ public class Arm : MonoBehaviour
     void Awake()
     {
         SetupRigidbodies();
+        SetupHandTagCollisions();
         SetupArmState(EArmState.StaticIn);
+
         //SetupArmInfo();
     }
 
@@ -57,19 +59,19 @@ public class Arm : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //if (isSticking)
-        //    return;
+        if (isSticking)
+            _mainBody.velocity = new Vector3(0, 0, 0);
 
-        if (!isStaticState)
+        if (!isStaticState && !isSticking)
         {
             MoveHand();
-            hand.localPosition = Vector2.Dot(hand.localPosition, localDirectionVec) * localDirectionVec; //dirVec already 
+            _hand.localPosition = Vector2.Dot(_hand.localPosition, localDirectionVec) * localDirectionVec; //dirVec already 
         }
 
-        hand.localPosition = Vector2.Dot(hand.localPosition, localDirectionVec) * localDirectionVec; //dirVec already 
+        _hand.localPosition = Vector2.Dot(_hand.localPosition, localDirectionVec) * localDirectionVec; //dirVec already 
 
         if (!isStaticState)
-            joint.connectedAnchor = hand.localPosition;
+            _joint.connectedAnchor = _hand.localPosition;
 
 
         if (ShouldBeInactive()) //check if need to be inactive
@@ -87,16 +89,16 @@ public class Arm : MonoBehaviour
         {
             if (rb.gameObject.tag == "Hand")
             {
-                rbHand = rb;
-                hand = rb.gameObject.transform;
-                joint = hand.GetComponent<FixedJoint>();
-                colHand = hand.GetComponent<HandCollider>();
+                _rbHand = rb;
+                _hand = rb.gameObject.transform;
+                _joint = _hand.GetComponent<FixedJoint>();
+                _colHand = _hand.GetComponent<HandCollider>();
                 break;
             }
         }
 
-        mainBody = GetComponentInParent<Rigidbody>();
-        mainConstraints = mainBody.constraints;
+        _mainBody = GetComponentInParent<Rigidbody>();
+        mainConstraints = _mainBody.constraints;
     }
 
     private bool ShouldBeInactive()
@@ -125,7 +127,7 @@ public class Arm : MonoBehaviour
 
     private float ArmLengthDot()
     {
-        return Vector2.Dot(localDirectionVec, hand.localPosition - transform.localPosition);
+        return Vector2.Dot(localDirectionVec, _hand.localPosition - transform.localPosition);
     }
 
     public void SetupArmInfo(ArmInfo armInfo)
@@ -136,7 +138,7 @@ public class Arm : MonoBehaviour
     public void SetSpawnLocalPos(Vector2 localPos)
     {
         transform.localPosition = localPos;
-        joint.connectedAnchor = hand.localPosition;
+        _joint.connectedAnchor = _hand.localPosition;
     }
 
 
@@ -146,14 +148,14 @@ public class Arm : MonoBehaviour
             return false;
 
         staticPosWorld = null;
-        mainBody.constraints = mainConstraints;
+        _mainBody.constraints = mainConstraints;
 
         switch (state)
         {
             case EArmState.StaticIn: //can do more here
                 isSticky = false;
-                float dot = Vector2.Dot(mainBody.rotation * localDirectionVec, new Vector2(1f, 0f));
-                mainBody.AddRelativeTorque(0f, 0f, (dot > 0 ? 1 : -1) * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
+                float dot = Vector2.Dot(_mainBody.rotation * localDirectionVec, new Vector2(1f, 0f));
+                _mainBody.AddRelativeTorque(0f, 0f, (dot > 0 ? 1 : -1) * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
                 break;
 
             case EArmState.StaticOut:
@@ -169,7 +171,6 @@ public class Arm : MonoBehaviour
                 currentMinSpeed = _armInfo.minSpeedRetract;
                 currentMaxSpeed = _armInfo.maxSpeedRetract;
                 currentAcceleration = _armInfo.accelerationRetract;
-                mainBody.constraints = mainConstraints;
                 isSticky = false;
                 break;
 
@@ -237,22 +238,22 @@ public class Arm : MonoBehaviour
         //    return;
         //}
 
-        Vector2 posLocal = (Vector2)rbHand.transform.localPosition;
+        Vector2 posLocal = (Vector2)_rbHand.transform.localPosition;
         MyLerp2D(ref posLocal, currentVelocity, Time.deltaTime);
 
 
         if (armState == EArmState.Retract)
         {
-            rbHand.transform.localPosition = (Vector3)posLocal;
+            _rbHand.transform.localPosition = (Vector3)posLocal;
             return;
         }
 
-        if (colHand.hasCollision ||
-            (colHand.timeSinceCollisionSec < COLLISION_BUFFER_SEC && staticPosWorld.HasValue))
+        if (_colHand.hasCollision ||
+            (_colHand.timeSinceCollisionSec < COLLISION_BUFFER_SEC && staticPosWorld.HasValue))
         {
-            staticPosWorld ??= rbHand.transform.position;
-            rbHand.transform.position = staticPosWorld.Value;
-            mainBody.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
+            staticPosWorld ??= _rbHand.transform.position;
+            _rbHand.transform.position = staticPosWorld.Value;
+            _mainBody.constraints |= RigidbodyConstraints.FreezeRotation;
 
             Vector2 force = new Vector2();
             switch (_armInfo.impactMode)
@@ -270,20 +271,20 @@ public class Arm : MonoBehaviour
                     SetupArmState(EArmState.Retract);
                     break;
             }
-            mainBody.AddForce((Vector3)force, ForceMode.VelocityChange);
+            _mainBody.AddForce((Vector3)force, ForceMode.VelocityChange);
             _armInfo.lastImpactForce = force;
 
             return;
         }
 
         staticPosWorld = null;
-        mainBody.constraints = mainConstraints;
+        _mainBody.constraints = mainConstraints;
 
 
-        float overshootLenght = MyCheckCollisions2D(    hand.position,
+        float overshootLenght = MyCheckCollisions2D(    _hand.position,
                                                         transform.rotation * localDirectionVec,        //world
                                                         (currentVelocity * Time.deltaTime).sqrMagnitude,
-                                                        rbHand.transform.lossyScale.x / 2f);
+                                                        _rbHand.transform.lossyScale.x / 2f);
         //float overshootLenght = MyCheckCollisions2D(    colHand,
         //                                                hand.localPosition,
         //                                                localDirectionVec,        //world
@@ -293,11 +294,24 @@ public class Arm : MonoBehaviour
         {
             Vector2 overshootVec = -overshootLenght * localDirectionVec;
             posLocal += overshootVec;
-            mainBody.AddForce(transform.rotation * overshootVec, ForceMode.VelocityChange); //world
+            _mainBody.AddForce(transform.rotation * overshootVec, ForceMode.VelocityChange); //world
         }
 
-        rbHand.transform.localPosition = (Vector3)posLocal;
+        _rbHand.transform.localPosition = (Vector3)posLocal;
         //rbHand.MovePosition(pos);
+    }
+
+    private void SetupHandTagCollisions()
+    {
+        var manager = HandTagCollisionManager.Instance;
+
+        manager.AddTagCollisionFunc("MovingCollider", new HandTagCollisionManager.TagCollisionCallback(StickToMovingCollider));
+    }
+
+    void StickToMovingCollider(Collision collision)
+    {
+        _mainBody.transform.parent = collision.transform;
+        return;
     }
 
     //void MoveBody()

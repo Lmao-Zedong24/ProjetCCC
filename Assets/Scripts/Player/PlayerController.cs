@@ -15,12 +15,13 @@ using UnityEngine.EventSystems;
 
 public class PlayerController : MonoBehaviour, IPlayerActions
 {
-    @InputController _controller;
-    Arm[]       _arms;
-    Rigidbody   _mainBody;
-    Collider    _collider;
+    @InputController    _controller;
+    Arm[]               _arms;
+    Rigidbody           _mainBody;
+    Collider            _collider;
+    HashSet<Arm>        _sticky;
+    RigidbodyConstraints _mainConstraints;
 
-    bool _stickyTogle;
     //arm coordinates (x,y) :
     //  R * (cos(0), sin(0))
     //  R * (cos(2PI/3), sin(2PI/3))
@@ -38,6 +39,10 @@ public class PlayerController : MonoBehaviour, IPlayerActions
         _arms = GetComponentsInChildren<Arm>();
         _mainBody = GetComponent<Rigidbody>();
         _collider = GetComponent<Collider>();
+
+        _sticky = new HashSet<Arm>();
+        _mainConstraints = _mainBody.constraints;
+
 
         float radius = transform.localScale.x / 3.5f;
         float teta = Mathf.PI / 6 + 2 * Mathf.PI / 3;
@@ -76,14 +81,13 @@ public class PlayerController : MonoBehaviour, IPlayerActions
         {
             if (arm.isSticking)
             {
-                _mainBody.useGravity = false;
-                _mainBody.isKinematic = true;
-                break;
+                _mainBody.constraints = RigidbodyConstraints.FreezeAll;
+                return;
             }
-
-            _mainBody.useGravity = true;
-            _mainBody.isKinematic = false;
         }
+
+        _mainBody.constraints = _mainConstraints;
+        transform.parent = null;
     }
 
 
@@ -147,10 +151,7 @@ public class PlayerController : MonoBehaviour, IPlayerActions
 
     public void OnStickyArm(InputAction.CallbackContext context)
     {
-        if (!context.started)
-            return;
-
-        if(_stickyTogle)
+        if (context.started)
         {
             foreach (var arm in _arms)
             {
@@ -158,20 +159,17 @@ public class PlayerController : MonoBehaviour, IPlayerActions
                     arm.armState == Arm.EArmState.Extend)
                 {
                     arm.isSticky = true;
-                    _stickyTogle = false;
+                    _sticky.Add(arm);
                 }
             }
-            return;
         }
 
-        _stickyTogle = true;
-
-        foreach (var arm in _arms)
+        if (context.canceled)
         {
-            if(arm.isSticky)
-            {
+            foreach (var arm in _sticky)
                 arm.isSticky = false;
-            }
+
+            _sticky.Clear();
         }
     }
 
@@ -179,6 +177,22 @@ public class PlayerController : MonoBehaviour, IPlayerActions
     {
         //throw new System.NotImplementedException();
     }
+
+    public void OnCollisionS(Collision collision)
+    {
+        if (transform.parent)
+            return;
+
+        foreach (Arm arm in _sticky)
+        {
+            if (arm.isSticking)
+            {
+                arm.isSticky = false;
+                return;
+            }
+        }
+    }
+
 
     #region Editor
 #if UNITY_EDITOR
