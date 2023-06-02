@@ -24,6 +24,8 @@ public class PlayerController : MonoBehaviour, IPlayerActions
 
     RigidbodyConstraints _mainConstraints;
 
+    public bool isLinked { get => _linkedBody != null; }
+
     //arm coordinates (x,y) :
     //  R * (cos(0), sin(0))
     //  R * (cos(2PI/3), sin(2PI/3))
@@ -47,7 +49,7 @@ public class PlayerController : MonoBehaviour, IPlayerActions
         _linkedBody = null;
 
 
-        float radius = transform.localScale.x / 3.5f;
+        float radius = transform.localScale.x / 3.8f;
         float teta = Mathf.PI / 6 + 2 * Mathf.PI / 3;
         for (int i = 0; i < _arms.Length; i++)
         {
@@ -84,7 +86,7 @@ public class PlayerController : MonoBehaviour, IPlayerActions
         {
             foreach (Arm arm in _arms)
             {
-                if (arm.isSticking)
+                if (arm.isCurentlySticking)
                 {
                     _mainBody.constraints = RigidbodyConstraints.FreezeAll;
                     return;
@@ -120,11 +122,16 @@ public class PlayerController : MonoBehaviour, IPlayerActions
         {
             _arms[i].SetupArmInfo(armInfo);
 
-            if (input.started && !_linkedBody)
+            if (input.started)
                 _arms[i].ExtendArm();
 
             else if (input.canceled)
+            {
+                if (_arms[i].isCurentlySticking)
+                    RemoveLinkedBody();
+
                 _arms[i].RetractArm();
+            }
         }
     }
 
@@ -137,7 +144,12 @@ public class PlayerController : MonoBehaviour, IPlayerActions
             _arms[i].ExtendArm();
 
         if (phase == InputActionPhase.Canceled)
+        {
+            if (_arms[i].isCurentlySticking)
+                RemoveLinkedBody();
+
             _arms[i].RetractArm();
+        }
     }
 
     private void RemoveLinkedBody()
@@ -214,7 +226,7 @@ public class PlayerController : MonoBehaviour, IPlayerActions
 
         foreach (Arm arm in _sticky)
         {
-            if (arm.isSticking)
+            if (arm.isCurentlySticking)
             {
                 arm.isSticky = false;
                 RemoveLinkedBody();

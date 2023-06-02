@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 7158359382072148349}
   - component: {fileID: 7158359382072148348}
   m_Layer: 0
-  m_Name: Platform
+  m_Name: Falling Platform
   m_TagString: MovingCollider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
