@@ -178,9 +178,9 @@ public class PlayerController : MonoBehaviour, IPlayerActions
         //throw new System.NotImplementedException();
     }
 
-    public void OnCollisionS(Collision collision)
+    public void OnCollisionEnter(Collision collision)
     {
-        if (transform.parent)
+        if (transform.parent == null)
             return;
 
         foreach (Arm arm in _sticky)

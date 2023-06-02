@@ -310,8 +310,8 @@ public class Arm : MonoBehaviour
 
     void StickToMovingCollider(Collision collision)
     {
-        _mainBody.transform.parent = collision.transform;
-        return;
+        if (isSticky && !collision.gameObject.TryGetComponent(out Rigidbody body))
+            _mainBody.transform.parent = collision.transform;
     }
 
     //void MoveBody()
