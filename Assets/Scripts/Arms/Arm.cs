@@ -9,6 +9,8 @@ public class Arm : MonoBehaviour
 {
     const float COLLISION_BUFFER_SEC = 0.25f;
 
+    static bool initializedHandTagCollisions = false;
+
     private float currentMinSpeed;
     private float currentMaxSpeed;
     private Vector2 desiredVelocity;
@@ -23,6 +25,7 @@ public class Arm : MonoBehaviour
     Rigidbody       _mainBody;
     Rigidbody       _rbHand;
     FixedJoint      _joint;
+    PlayerController _playerController;
 
     ArmInfo _armInfo;
 
@@ -43,10 +46,13 @@ public class Arm : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        _playerController = GetComponentInParent<PlayerController>();
+
         SetupRigidbodies();
-        SetupHandTagCollisions();
         SetupArmState(EArmState.StaticIn);
 
+        if (!initializedHandTagCollisions)
+            SetupHandTagCollisions();
         //SetupArmInfo();
     }
 
@@ -59,8 +65,8 @@ public class Arm : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (isSticking)
-            _mainBody.velocity = new Vector3(0, 0, 0);
+        //if (isSticking)
+        //    _mainBody.velocity = new Vector3(0, 0, 0);
 
         if (!isStaticState && !isSticking)
         {
@@ -214,6 +220,18 @@ public class Arm : MonoBehaviour
         SetDisiredVelocity();
     }
 
+    public void TryStick(Collision collision)
+    {
+        if (!isSticky || !collision.gameObject.CompareTag("MovingCollider"))
+            return;
+        
+        if (collision.gameObject.TryGetComponent(out Rigidbody body))
+            _playerController.LinkBody(body);
+
+        else
+            _mainBody.transform.parent = collision.transform;
+    }
+
     private void SetDisiredVelocity()
     {
         desiredVelocity = localDirectionVec * currentMaxSpeed;
@@ -303,15 +321,16 @@ public class Arm : MonoBehaviour
 
     private void SetupHandTagCollisions()
     {
-        var manager = HandTagCollisionManager.Instance;
+        initializedHandTagCollisions = true;
 
-        manager.AddTagCollisionFunc("MovingCollider", new HandTagCollisionManager.TagCollisionCallback(StickToMovingCollider));
     }
 
     void StickToMovingCollider(Collision collision)
     {
         if (isSticky && !collision.gameObject.TryGetComponent(out Rigidbody body))
             _mainBody.transform.parent = collision.transform;
+            return;
+        
     }
 
     //void MoveBody()
