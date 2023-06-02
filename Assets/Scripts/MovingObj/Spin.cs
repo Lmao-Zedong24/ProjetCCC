@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class Spin : MonoBehaviour
 {
-    public Vector3 rotationPerMinute;
+    public float rotationPerMinute;
 
     // Update is called once per frame
     void Update()
     {
-        transform.rotation *= Quaternion.Euler(Time.deltaTime * 6f * rotationPerMinute);
+        transform.rotation *= Quaternion.Euler(0, 0, Time.deltaTime * 6f * rotationPerMinute);
     }
 }
