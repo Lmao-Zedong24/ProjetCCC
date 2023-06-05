@@ -66,6 +66,8 @@ public class Arm : MonoBehaviour
 
     private void FixedUpdate()
     {
+        //_rbHand.rotation = Quaternion.identity;
+
         if (ShouldBeInactive()) //check if need to be inactive
             SetupArmState(EArmState.StaticIn);
 
@@ -75,7 +77,12 @@ public class Arm : MonoBehaviour
         if (!isStaticState && !isCurentlySticking)
         {
             MoveHand();
-            _hand.localPosition = Vector2.Dot(_hand.localPosition, localDirectionVec) * localDirectionVec; //dirVec already 
+            //_hand.localPosition = Vector2.Dot(_hand.localPosition, localDirectionVec) * localDirectionVec; //dirVec already 
+        }
+        else
+        {
+            
+
         }
 
         _hand.localPosition = Vector2.Dot(_hand.localPosition, localDirectionVec) * localDirectionVec; //dirVec already 
@@ -305,7 +312,6 @@ public class Arm : MonoBehaviour
         }
 
         staticPosWorld = null;
-        _mainBody.constraints = mainConstraints;
 
 
         float overshootLenght = MyCheckCollisions2D(    _hand.position,
