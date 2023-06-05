@@ -49,7 +49,7 @@ public class PlayerController : MonoBehaviour, IPlayerActions
         _linkedBody = null;
 
 
-        float radius = transform.localScale.x / 3.8f;
+        float radius = transform.localScale.x / 3.5f;
         float teta = Mathf.PI / 6 + 2 * Mathf.PI / 3;
         for (int i = 0; i < _arms.Length; i++)
         {
@@ -58,16 +58,20 @@ public class PlayerController : MonoBehaviour, IPlayerActions
             _arms[i].SetSpawnLocalPos(new Vector2(radius * Mathf.Cos(val),
                                                     radius * Mathf.Sin(val)));
 
-            var childColliders = _arms[i].GetComponentsInChildren<Collider>();
+            var armColliders = _arms[i].GetComponentsInChildren<Collider>();
 
-            for (int j = 0; j < childColliders.Length; j++)
-            {
-                Physics.IgnoreCollision(_collider, childColliders[j]);
+            //for (int j = 0; j < armColliders.Length; j++)
+            //{
+            //    Physics.IgnoreCollision(_collider, armColliders[j]);
 
-                for (int k = j + 1; k < childColliders.Length; k++)
-                    Physics.IgnoreCollision(childColliders[j], childColliders[k]);
-            }
+            //    for (int k = j + 1; k < armColliders.Length; k++)
+            //    {
+            //        Physics.IgnoreCollision(armColliders[j], armColliders[k]);
+            //    }
+            //}
         }
+
+        Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Player"));
 
         //var allTrans = GetComponentsInChildren<Transform>();
 
@@ -88,13 +92,14 @@ public class PlayerController : MonoBehaviour, IPlayerActions
             {
                 if (arm.isCurentlySticking)
                 {
-                    _mainBody.constraints = RigidbodyConstraints.FreezeAll;
+                    //_mainBody.constraints = RigidbodyConstraints.FreezeAll;
+                    _mainBody.constraints = RigidbodyConstraints.FreezePosition;
                     return;
                 }
             }
         }
 
-        _mainBody.constraints = _mainConstraints;
+        //_mainBody.constraints = _mainConstraints;
         transform.parent = null;
     }
 

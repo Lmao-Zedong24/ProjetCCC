@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class Arm : MonoBehaviour
 {
-    const float COLLISION_BUFFER_SEC = 0.25f;
+    const float COLLISION_BUFFER_SEC = 0.2f;
 
     static bool initializedHandTagCollisions = false;
 
@@ -66,8 +66,11 @@ public class Arm : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //if (isSticking)
-        //    _mainBody.velocity = new Vector3(0, 0, 0);
+        if (ShouldBeInactive()) //check if need to be inactive
+            SetupArmState(EArmState.StaticIn);
+
+        if (ShouldBeFullOut())
+            SetupArmState(EArmState.StaticOut);
 
         if (!isStaticState && !isCurentlySticking)
         {
@@ -79,12 +82,6 @@ public class Arm : MonoBehaviour
 
         if (!isStaticState && !isCurentlySticking)
             _joint.connectedAnchor = _hand.localPosition;
-
-        if (ShouldBeInactive()) //check if need to be inactive
-            SetupArmState(EArmState.StaticIn);
-
-        if (ShouldBeFullOut())
-            SetupArmState(EArmState.StaticOut);
     }
 
     private void SetupRigidbodies()
@@ -231,7 +228,14 @@ public class Arm : MonoBehaviour
             _playerController.LinkBody(body);
 
         else
-            _mainBody.transform.parent = collision.transform;
+        {
+            Vector3 tmpScale = _mainBody.transform.lossyScale;
+            //_mainBody.transform.localScale = new Vector3 (  tmpScale.x / collision.transform.lossyScale.x,
+            //                                                tmpScale.y / collision.transform.lossyScale.y,
+            //                                                tmpScale.z / collision.transform.lossyScale.z);
+            _mainBody.transform.localScale = Vector3.Scale(tmpScale, collision.transform.lossyScale);
+            _mainBody.transform.SetParent(collision.transform);
+        }
     }
 
     private void SetDisiredVelocity()
@@ -317,7 +321,7 @@ public class Arm : MonoBehaviour
         {
             Vector2 overshootVec = -overshootLenght * localDirectionVec;
             posLocal += overshootVec;
-            //_mainBody.AddForce(transform.rotation * overshootVec, ForceMode.VelocityChange); //world
+            _mainBody.AddForce(transform.rotation * overshootVec, ForceMode.VelocityChange); //world
         }
 
         _rbHand.transform.localPosition = (Vector3)posLocal;
