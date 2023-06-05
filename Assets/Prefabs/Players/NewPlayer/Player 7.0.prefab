@@ -163,8 +163,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20ef5d6d6bf04724d85ec6060e29178b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  armInfo: {fileID: 11400000, guid: f74ca94d7fcb03a4593837ebce71cb91, type: 2}
-  GUIShowRetract: 0
+  armInfo: {fileID: 11400000, guid: 38421e4c681f24149a8165610ffacf5f, type: 2}
+  GUIShowRetract: 1
   GUIShowImpact: 1
   GUIShowExtend: 1
 --- !u!33 &4124456837655433228
