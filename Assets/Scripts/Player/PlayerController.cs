@@ -99,7 +99,7 @@ public class PlayerController : MonoBehaviour, IPlayerActions
             }
         }
 
-        _mainBody.constraints = _mainConstraints;
+        //_mainBody.constraints = _mainConstraints;
         transform.parent = null;
     }
 
