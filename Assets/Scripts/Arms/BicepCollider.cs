@@ -11,8 +11,8 @@ public class BicepCollider : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        _bottom =   transform.parent;
-        _top =      transform.parent.GetComponentInChildren<HandCollider>().transform;
+        _bottom =   transform.parent.parent; //arm
+        _top =      transform.parent;        //hand
 
         //Vector3 upwards = transform.parent.position - transform.parent.parent.position;
         //Vector3 forward = Quaternion.Euler(0, 0, -90f) * upwards;
