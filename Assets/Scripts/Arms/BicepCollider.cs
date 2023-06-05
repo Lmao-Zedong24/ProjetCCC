@@ -23,8 +23,8 @@ public class BicepCollider : MonoBehaviour
     void Update()
     {
         var vec = (_top.position - _bottom.position);
-        transform.position = _bottom.position + 0.4f * vec;
-        float val = vec.magnitude * 1.9f;
+        transform.position = _bottom.position + 0.5f * vec;
+        float val = vec.magnitude * 2.1f;
         var newScale = transform.localScale;
         newScale.y = val;
         transform.localScale = newScale;
