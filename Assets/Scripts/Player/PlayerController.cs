@@ -15,6 +15,9 @@ using UnityEngine.EventSystems;
 
 public class PlayerController : MonoBehaviour, IPlayerActions
 {
+    readonly float MAX_VELOCITY = 20.0f;
+    readonly float MAX_ANGULAR_VELOCITY = 20.0f;
+
     @InputController    _controller;
     Arm[]               _arms;
     Rigidbody           _mainBody;
@@ -98,6 +101,15 @@ public class PlayerController : MonoBehaviour, IPlayerActions
                 }
             }
         }
+
+        _mainBody.centerOfMass = Vector3.zero;
+
+        if (_mainBody.angularVelocity.sqrMagnitude >= MAX_ANGULAR_VELOCITY * MAX_ANGULAR_VELOCITY)
+            _mainBody.angularVelocity = _mainBody.angularVelocity.normalized * MAX_ANGULAR_VELOCITY;
+
+        if (_mainBody.velocity.sqrMagnitude >= MAX_VELOCITY * MAX_VELOCITY)
+            _mainBody.velocity = _mainBody.velocity.normalized * MAX_VELOCITY;
+
 
         //_mainBody.constraints = _mainConstraints;
         transform.parent = null;
