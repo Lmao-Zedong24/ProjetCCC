@@ -310,8 +310,8 @@ public class Arm : MonoBehaviour
 
         float overshootLenght = MyCheckCollisions2D(    _hand.position,
                                                         transform.rotation * localDirectionVec,        //world
-                                                        (currentVelocity * Time.deltaTime).sqrMagnitude,
-                                                        _rbHand.transform.lossyScale.x / 2f);
+                                                        (_hand.localPosition - (Vector3)posLocal).magnitude / 2,
+                                                        _rbHand.transform.lossyScale.x / 1.9f);
         //float overshootLenght = MyCheckCollisions2D(    colHand,
         //                                                hand.localPosition,
         //                                                localDirectionVec,        //world
@@ -321,7 +321,8 @@ public class Arm : MonoBehaviour
         {
             Vector2 overshootVec = -overshootLenght * localDirectionVec;
             posLocal += overshootVec;
-            _mainBody.AddForce(transform.rotation * overshootVec, ForceMode.VelocityChange); //world
+            //_mainBody.AddForce(transform.rotation * overshootVec, ForceMode.VelocityChange); //world
+            _mainBody.AddForce(transform.rotation * (currentVelocity.magnitude * overshootVec), ForceMode.VelocityChange); //world
         }
 
         _rbHand.transform.localPosition = (Vector3)posLocal;
@@ -359,12 +360,12 @@ public class Arm : MonoBehaviour
     private float MyCheckCollisions2D(Vector2 posWorld, Vector2 dirWorld, float maxDistance, float radius)
     {
         Ray ray = new Ray(posWorld, dirWorld);
-        Debug.DrawLine(posWorld, posWorld + dirWorld * (maxDistance + radius), Color.red);
+        Debug.DrawLine(posWorld + dirWorld * radius, posWorld + dirWorld * (maxDistance + radius), Color.red);
+        //Debug.DrawLine(posWorld, posWorld + dirWorld * radius, Color.blue, 3f);
 
-        //if (Physics.Raycast(ray, out RaycastHit hitInfo, maxDistance))
-        //    return maxDistance - hitInfo.distance;
 
-        if (Physics.Raycast(ray, out RaycastHit hitInfo, (maxDistance + radius)))
+        //if (Physics.Raycast(ray, out RaycastHit hitInfo, (maxDistance + radius)))
+        if (Physics.SphereCast(ray, radius, out RaycastHit hitInfo, maxDistance))
         {
             //var sph = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             //sph.gameObject.transform.SetPositionAndRotation(posWorld, Quaternion.identity);
