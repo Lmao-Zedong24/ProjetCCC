@@ -15,12 +15,17 @@ using UnityEngine.EventSystems;
 
 public class PlayerController : MonoBehaviour, IPlayerActions
 {
-    @InputController _controller;
-    Arm[]       _arms;
-    Rigidbody   _mainBody;
-    Collider    _collider;
+    @InputController    _controller;
+    Arm[]               _arms;
+    Rigidbody           _mainBody;
+    Collider            _collider;
+    HashSet<Arm>        _sticky;
+    FixedJoint          _linkedBody;
 
-    bool _stickyTogle;
+    RigidbodyConstraints _mainConstraints;
+
+    public bool isLinked { get => _linkedBody != null; }
+
     //arm coordinates (x,y) :
     //  R * (cos(0), sin(0))
     //  R * (cos(2PI/3), sin(2PI/3))
@@ -39,6 +44,11 @@ public class PlayerController : MonoBehaviour, IPlayerActions
         _mainBody = GetComponent<Rigidbody>();
         _collider = GetComponent<Collider>();
 
+        _sticky = new HashSet<Arm>();
+        _mainConstraints = _mainBody.constraints;
+        _linkedBody = null;
+
+
         float radius = transform.localScale.x / 3.5f;
         float teta = Mathf.PI / 6 + 2 * Mathf.PI / 3;
         for (int i = 0; i < _arms.Length; i++)
@@ -48,16 +58,20 @@ public class PlayerController : MonoBehaviour, IPlayerActions
             _arms[i].SetSpawnLocalPos(new Vector2(radius * Mathf.Cos(val),
                                                     radius * Mathf.Sin(val)));
 
-            var childColliders = _arms[i].GetComponentsInChildren<Collider>();
+            var armColliders = _arms[i].GetComponentsInChildren<Collider>();
 
-            for (int j = 0; j < childColliders.Length; j++)
-            {
-                Physics.IgnoreCollision(_collider, childColliders[j]);
+            //for (int j = 0; j < armColliders.Length; j++)
+            //{
+            //    Physics.IgnoreCollision(_collider, armColliders[j]);
 
-                for (int k = j + 1; k < childColliders.Length; k++)
-                    Physics.IgnoreCollision(childColliders[j], childColliders[k]);
-            }
+            //    for (int k = j + 1; k < armColliders.Length; k++)
+            //    {
+            //        Physics.IgnoreCollision(armColliders[j], armColliders[k]);
+            //    }
+            //}
         }
+
+        Physics.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Player"));
 
         //var allTrans = GetComponentsInChildren<Transform>();
 
@@ -72,18 +86,21 @@ public class PlayerController : MonoBehaviour, IPlayerActions
     }
     void FixedUpdate()
     {
-        foreach(Arm arm in _arms)
+        if (_linkedBody == null)
         {
-            if (arm.isSticking)
+            foreach (Arm arm in _arms)
             {
-                _mainBody.useGravity = false;
-                _mainBody.isKinematic = true;
-                break;
+                if (arm.isCurentlySticking)
+                {
+                    //_mainBody.constraints = RigidbodyConstraints.FreezeAll;
+                    _mainBody.constraints = RigidbodyConstraints.FreezePosition;
+                    return;
+                }
             }
-
-            _mainBody.useGravity = true;
-            _mainBody.isKinematic = false;
         }
+
+        //_mainBody.constraints = _mainConstraints;
+        transform.parent = null;
     }
 
 
@@ -114,7 +131,12 @@ public class PlayerController : MonoBehaviour, IPlayerActions
                 _arms[i].ExtendArm();
 
             else if (input.canceled)
+            {
+                if (_arms[i].isCurentlySticking)
+                    RemoveLinkedBody();
+
                 _arms[i].RetractArm();
+            }
         }
     }
 
@@ -127,7 +149,31 @@ public class PlayerController : MonoBehaviour, IPlayerActions
             _arms[i].ExtendArm();
 
         if (phase == InputActionPhase.Canceled)
+        {
+            if (_arms[i].isCurentlySticking)
+                RemoveLinkedBody();
+
             _arms[i].RetractArm();
+        }
+    }
+
+    private void RemoveLinkedBody()
+    {
+        if (_linkedBody != null)
+        {
+            Destroy(_linkedBody);
+            _linkedBody = null;
+        }
+    }
+
+    public void LinkBody(Rigidbody body)
+    {
+        if (_linkedBody == null)
+        {
+            _linkedBody = gameObject.AddComponent<FixedJoint>();
+            _linkedBody.connectedBody = body;
+            _mainBody.constraints = _mainConstraints;
+        }
     }
 
     public void OnArm1(InputAction.CallbackContext context)
@@ -147,10 +193,7 @@ public class PlayerController : MonoBehaviour, IPlayerActions
 
     public void OnStickyArm(InputAction.CallbackContext context)
     {
-        if (!context.started)
-            return;
-
-        if(_stickyTogle)
+        if (context.started)
         {
             foreach (var arm in _arms)
             {
@@ -158,20 +201,21 @@ public class PlayerController : MonoBehaviour, IPlayerActions
                     arm.armState == Arm.EArmState.Extend)
                 {
                     arm.isSticky = true;
-                    _stickyTogle = false;
+                    _sticky.Add(arm);
                 }
             }
-            return;
         }
 
-        _stickyTogle = true;
-
-        foreach (var arm in _arms)
+        if (context.canceled)
         {
-            if(arm.isSticky)
+            foreach (var arm in _sticky)
             {
                 arm.isSticky = false;
+                RemoveLinkedBody();
             }
+
+            //RemoveLinkedBody();
+            _sticky.Clear();
         }
     }
 
@@ -179,6 +223,24 @@ public class PlayerController : MonoBehaviour, IPlayerActions
     {
         //throw new System.NotImplementedException();
     }
+
+    public void OnCollisionEnter(Collision collision)
+    {
+        if (transform.parent == null)
+            return;
+
+        foreach (Arm arm in _sticky)
+        {
+            if (arm.isCurentlySticking)
+            {
+                arm.isSticky = false;
+                RemoveLinkedBody();
+                _mainBody.velocity = Vector3.zero;
+                return;
+            }
+        }
+    }
+
 
     #region Editor
 #if UNITY_EDITOR
@@ -256,9 +318,9 @@ public class PlayerController : MonoBehaviour, IPlayerActions
                 EditorGUILayout.EnumFlagsField("Arm 3", player._arms[2].armState);
                 EditorGUILayout.Space();
 
-                EditorGUILayout.Toggle("Arm 1", player._arms[0].isSticking);
-                EditorGUILayout.Toggle("Arm 2", player._arms[1].isSticking);
-                EditorGUILayout.Toggle("Arm 3", player._arms[2].isSticking);
+                EditorGUILayout.Toggle("Arm 1", player._arms[0].isSticky);
+                EditorGUILayout.Toggle("Arm 2", player._arms[1].isSticky);
+                EditorGUILayout.Toggle("Arm 3", player._arms[2].isSticky);
                 EditorGUILayout.Space();
             }
 

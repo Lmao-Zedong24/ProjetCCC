@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3779604670885076557}
   - component: {fileID: 278099445974569448}
   - component: {fileID: 2610107223788807458}
+  - component: {fileID: 3185196084728716323}
   m_Layer: 0
   m_Name: GoodRamp1
   m_TagString: Untagged
@@ -81,3 +82,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &3185196084728716323
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4555402846546380023}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 580299199589468792, guid: 03109598454c6984f9450b2ba9390a20, type: 3}
