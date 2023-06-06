@@ -25197,22 +25197,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 617509014832682823, guid: 1d92d17de45e90b4f8dc54a6d0bebe17, type: 3}
-      propertyPath: m_Constraints
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1156782669686965114, guid: 1d92d17de45e90b4f8dc54a6d0bebe17, type: 3}
-      propertyPath: m_Radius
-      value: 0.4966313
-      objectReference: {fileID: 0}
-    - target: {fileID: 1156782669686965114, guid: 1d92d17de45e90b4f8dc54a6d0bebe17, type: 3}
-      propertyPath: m_Center.x
-      value: 0.007701248
-      objectReference: {fileID: 0}
-    - target: {fileID: 1156782669686965114, guid: 1d92d17de45e90b4f8dc54a6d0bebe17, type: 3}
-      propertyPath: m_Center.y
-      value: 0.0048234174
-      objectReference: {fileID: 0}
     - target: {fileID: 1322922025487677173, guid: 1d92d17de45e90b4f8dc54a6d0bebe17, type: 3}
       propertyPath: m_Name
       value: Player6.0 (1)
