@@ -66,8 +66,6 @@ public class Arm : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //_rbHand.rotation = Quaternion.identity;
-
         if (ShouldBeInactive()) //check if need to be inactive
             SetupArmState(EArmState.StaticIn);
 
@@ -78,11 +76,6 @@ public class Arm : MonoBehaviour
         {
             MoveHand();
             //_hand.localPosition = Vector2.Dot(_hand.localPosition, localDirectionVec) * localDirectionVec; //dirVec already 
-        }
-        else
-        {
-            
-
         }
 
         _hand.localPosition = Vector2.Dot(_hand.localPosition, localDirectionVec) * localDirectionVec; //dirVec already 
@@ -164,8 +157,6 @@ public class Arm : MonoBehaviour
         {
             case EArmState.StaticIn: //can do more here
                 isSticky = false;
-                float dot = Vector2.Dot(_mainBody.rotation * localDirectionVec, new Vector2(1f, 0f));
-                _mainBody.AddRelativeTorque(0f, 0f, (dot > 0 ? 1 : -1) * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
                 break;
 
             case EArmState.StaticOut:
@@ -190,10 +181,19 @@ public class Arm : MonoBehaviour
             //    break;
         }
 
-        //if (state != EArmState.Static)
-            //rbHand.isKinematic = false;
+        if (armState == EArmState.Extend && 
+            (_colHand.hasCollision ||
+            (_colHand.timeSinceCollisionSec < COLLISION_BUFFER_SEC && staticPosWorld.HasValue)))
+        {
+            //_mainBody.constraints |= RigidbodyConstraints.FreezeRotation;
+            _rbHand.angularVelocity = Vector3.zero;
+            _mainBody.angularVelocity = Vector3.zero;
+
+            ApplyTorque();
+        }
 
         armState = state;
+
         return true;
     }
 
@@ -245,6 +245,26 @@ public class Arm : MonoBehaviour
         }
     }
 
+    private void ApplyTorque()
+    {
+        _mainBody.angularVelocity = Vector3.zero;
+        _rbHand.angularVelocity = Vector3.zero;
+        float dot = Vector2.Dot(_mainBody.rotation * localDirectionVec, new Vector2(1f, 0f));
+
+        //vecrsion 3
+        //_mainBody.AddRelativeTorque(0f, 0f, Mathf.Clamp(dot > 0 ? 1 - dot: 1 + dot , -1, 1) * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
+
+        //version 2
+        //_mainBody.AddRelativeTorque(0f, 0f, (dot < 0 ? 1 : -1) * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
+        //* (dot < 0.3 && dot > -0.3 ? 0 : 1)
+
+        //version 1
+        _mainBody.AddRelativeTorque(0f, 0f, -Mathf.Clamp(dot, -1, 1) * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
+
+        //old
+        //_mainBody.AddRelativeTorque(0f, 0f, (dot > 0 ? 1 : -1) * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
+    }
+
     private void SetDisiredVelocity()
     {
         desiredVelocity = localDirectionVec * currentMaxSpeed;
@@ -285,6 +305,8 @@ public class Arm : MonoBehaviour
             staticPosWorld ??= _rbHand.transform.position;
             _rbHand.transform.position = staticPosWorld.Value;
             _mainBody.constraints |= RigidbodyConstraints.FreezeRotation;
+            _mainBody.angularVelocity = Vector3.zero;
+            _rbHand.angularVelocity = Vector3.zero;
 
             if (_playerController.isLinked) //dont add force
                 return;
@@ -311,13 +333,19 @@ public class Arm : MonoBehaviour
             return;
         }
 
+        if (staticPosWorld.HasValue)
+        {
+            ApplyTorque();
+        }
+
         staticPosWorld = null;
+        _mainBody.constraints = mainConstraints;
 
 
         float overshootLenght = MyCheckCollisions2D(    _hand.position,
                                                         transform.rotation * localDirectionVec,        //world
-                                                        (currentVelocity * Time.deltaTime).sqrMagnitude,
-                                                        _rbHand.transform.lossyScale.x / 2f);
+                                                        (_hand.localPosition - (Vector3)posLocal).magnitude / 2,
+                                                        _rbHand.transform.lossyScale.x / 1.9f);
         //float overshootLenght = MyCheckCollisions2D(    colHand,
         //                                                hand.localPosition,
         //                                                localDirectionVec,        //world
@@ -327,7 +355,10 @@ public class Arm : MonoBehaviour
         {
             Vector2 overshootVec = -overshootLenght * localDirectionVec;
             posLocal += overshootVec;
+
             _mainBody.AddForce(transform.rotation * overshootVec, ForceMode.VelocityChange); //world
+            //ApplyTorque();
+            //_mainBody.AddForce(transform.rotation * (currentVelocity.magnitude * overshootVec), ForceMode.VelocityChange); //world
         }
 
         _rbHand.transform.localPosition = (Vector3)posLocal;
@@ -365,12 +396,12 @@ public class Arm : MonoBehaviour
     private float MyCheckCollisions2D(Vector2 posWorld, Vector2 dirWorld, float maxDistance, float radius)
     {
         Ray ray = new Ray(posWorld, dirWorld);
-        Debug.DrawLine(posWorld, posWorld + dirWorld * (maxDistance + radius), Color.red);
+        Debug.DrawLine(posWorld + dirWorld * radius, posWorld + dirWorld * (maxDistance + radius), Color.red);
+        //Debug.DrawLine(posWorld, posWorld + dirWorld * radius, Color.blue, 3f);
 
-        //if (Physics.Raycast(ray, out RaycastHit hitInfo, maxDistance))
-        //    return maxDistance - hitInfo.distance;
 
-        if (Physics.Raycast(ray, out RaycastHit hitInfo, (maxDistance + radius)))
+        //if (Physics.Raycast(ray, out RaycastHit hitInfo, (maxDistance + radius)))
+        if (Physics.SphereCast(ray, radius, out RaycastHit hitInfo, maxDistance))
         {
             //var sph = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             //sph.gameObject.transform.SetPositionAndRotation(posWorld, Quaternion.identity);
