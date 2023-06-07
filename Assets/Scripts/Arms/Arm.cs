@@ -141,7 +141,7 @@ public class Arm : MonoBehaviour
     public void SetSpawnLocalPos(Vector2 localPos)
     {
         transform.localPosition = localPos;
-        _joint.connectedAnchor = _hand.localPosition;
+        //_joint.connectedAnchor = _hand.localPosition;
     }
 
 
