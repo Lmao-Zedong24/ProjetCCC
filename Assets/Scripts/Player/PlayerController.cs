@@ -19,11 +19,11 @@ public class PlayerController : MonoBehaviour, IPlayerActions
     readonly float MAX_ANGULAR_VELOCITY = 20.0f;
 
     @InputController    _controller;
-    Arm[]               _arms;
     Rigidbody           _mainBody;
     Collider            _collider;
     HashSet<Arm>        _sticky;
     FixedJoint          _linkedBody;
+    public Arm[] _arms { get; private set; }
 
     RigidbodyConstraints _mainConstraints;
 

@@ -152,6 +152,7 @@ public class Arm : MonoBehaviour
 
         staticPosWorld = null;
         _mainBody.constraints = mainConstraints;
+        _rbHand.useGravity = false;
 
         switch (state)
         {
@@ -160,6 +161,7 @@ public class Arm : MonoBehaviour
                 break;
 
             case EArmState.StaticOut:
+                _rbHand.useGravity = true;
                 break;
 
             case EArmState.Extend:
