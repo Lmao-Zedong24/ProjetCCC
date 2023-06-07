@@ -198,12 +198,13 @@ public class Arm : MonoBehaviour
     }
 
     //Both kinda same
-    public void ExtendArm()
+    public void ExtendArm(int index)
     {
         if (StopExtend(ArmLengthDot()))
             return;
 
         SetupArmState(EArmState.Extend);
+        StatsManager.Instance?.IncrementArm(index);
 
         localDirectionVec = transform.localPosition.normalized;
         currentVelocity = new Vector2(0f, 0f);
