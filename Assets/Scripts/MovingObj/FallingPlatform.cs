@@ -20,13 +20,14 @@ public class FallingPlatform : MonoBehaviour
 
     EMovingState    _movingState;
     bool            _isCollisionPlayer;
+    bool            _isWaiting;
+    bool            _hasOtherCollision;
 
     enum EMovingState
     {
         NONE,
-        WAITING,
         GOING_UP,
-        GOING_DOWN
+        GOING_DOWN,
     }
 
 
@@ -41,23 +42,29 @@ public class FallingPlatform : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if ((_movingState == EMovingState.GOING_DOWN || _movingState == EMovingState.WAITING)
-            && transform.position.y < _endPos.y)
+        if ((_movingState == EMovingState.GOING_DOWN)
+            && transform.position.y <= _endPos.y)
         {
-            _movingState = EMovingState.WAITING;
+            _isWaiting = true;
+            _movingState = EMovingState.NONE;
         }
 
-        if (_movingState == EMovingState.GOING_DOWN)
-        {
-            transform.position -= new Vector3(0, Time.deltaTime * speedDown, 0);
-        }
-
-        if (_movingState == EMovingState.WAITING)
+        if (_isWaiting)
         {
             _timer -= Time.deltaTime;
 
             if (_timer <= 0f)
                 TryMoveUp();
+        }
+
+        if (_hasOtherCollision)
+            return;
+
+        if ((_movingState == EMovingState.GOING_UP &&   transform.position.y <= _startPos.y) ||
+            (_movingState == EMovingState.GOING_DOWN && transform.position.y >= _endPos.y))
+        {
+            float speed = _movingState == EMovingState.GOING_UP ? speedUp : -speedDown;
+            transform.position += new Vector3(0, Time.deltaTime * speed, 0);
         }
     }
     
@@ -66,27 +73,29 @@ public class FallingPlatform : MonoBehaviour
         if (_movingState == EMovingState.GOING_UP)
             return;
 
+        _isWaiting = false;
+
         if (_isCollisionPlayer)
         {
-            _movingState = EMovingState.WAITING;
+            _movingState = EMovingState.GOING_DOWN;
             return;
         }
 
+        _hasOtherCollision = false;
         _timer = timerBackUpSeconds;
         _movingState = EMovingState.GOING_UP;
-        StartCoroutine(MoveUpRoutine());
     }
 
-    IEnumerator MoveUpRoutine()
+    private void OnTriggerEnter(Collider collision)
     {
-        while (transform.position.y <= _startPos.y && _movingState == EMovingState.GOING_UP)
-        {
-            transform.position += new Vector3(0, Time.deltaTime * speedUp, 0);
-            yield return null;
-        }
+        if (collision.gameObject.layer != _layerPlayer)
+            _hasOtherCollision = true;
+    }
 
-        _movingState = EMovingState.NONE;
-        yield return null;
+    private void OnTriggerExit(Collider collision)
+    {
+        if (collision.gameObject.layer != _layerPlayer)
+            _hasOtherCollision = false;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -97,27 +106,31 @@ public class FallingPlatform : MonoBehaviour
                 return;
 
             _isCollisionPlayer = true;
+            _isWaiting = false;
             _movingState = EMovingState.GOING_DOWN;
-            _timer = timerBackUpSeconds;
             return;
         }
 
-        _movingState = EMovingState.WAITING;
+        _movingState = EMovingState.NONE;
     }
 
     private void OnCollisionStay(Collision collision)
     {
         if (collision.gameObject.layer == _layerPlayer &&
             collision.transform.position.y > transform.position.y)
+        {
             _isCollisionPlayer = true;
+        }
     }
     private void OnCollisionExit(Collision collision)
     {
-        if (collision.gameObject.layer == _layerPlayer &&
-            collision.transform.position.y > transform.position.y)
+        if (collision.gameObject.layer == _layerPlayer)
         {
             _isCollisionPlayer = false;
-            _movingState = EMovingState.WAITING;
+            _isWaiting = true;
+            _timer = timerBackUpSeconds;
+
+            //_movingState = EMovingState.NONE;
         }
     }
 }
