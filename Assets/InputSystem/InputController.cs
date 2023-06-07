@@ -238,6 +238,128 @@ public class @InputController : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""UICanvas"",
+            ""id"": ""16c93aa0-28ed-43d4-9a83-d15e46eff99b"",
+            ""actions"": [
+                {
+                    ""name"": ""OnArm1"",
+                    ""type"": ""Button"",
+                    ""id"": ""234b8b44-4207-44f7-b2d0-fe2e47b7a79c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""OnArm2"",
+                    ""type"": ""Button"",
+                    ""id"": ""24e7a3e5-06db-4be6-af76-c7e680f42433"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""OnArm3"",
+                    ""type"": ""Button"",
+                    ""id"": ""f6035dd5-fd15-4b4d-b330-3eda4c1034d3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""OffArm1"",
+                    ""type"": ""Button"",
+                    ""id"": ""565ae2b3-cb06-4167-a5ed-ad62dc11bad1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=1)""
+                },
+                {
+                    ""name"": ""OffArm2"",
+                    ""type"": ""Button"",
+                    ""id"": ""bca828b0-212c-4a45-b6bc-5fa3eb462fee"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=1)""
+                },
+                {
+                    ""name"": ""OffArm3"",
+                    ""type"": ""Button"",
+                    ""id"": ""0352b6d9-86b5-4bb7-bb6c-1b8951ff9c08"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press(behavior=1)""
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""1e621fa7-618a-4eb1-ab70-f25ce516ebfa"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OnArm1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""df0aa93c-e897-4f1b-a130-aa05c1516af6"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OnArm2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e9322701-1fc7-46f3-a629-7b9c663c63d9"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OnArm3"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a84be97e-d3bf-4a77-98d6-30cc52c8758e"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OffArm1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""221d0f7e-3c37-4f89-981c-ac3c3c78be5a"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OffArm2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""07a48efc-74e2-4f9d-94fd-f75015ae6f6c"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OffArm3"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -257,6 +379,14 @@ public class @InputController : IInputActionCollection, IDisposable
         m_SpawnerPos_Spawn4 = m_SpawnerPos.FindAction("Spawn4", throwIfNotFound: true);
         m_SpawnerPos_Spawn5 = m_SpawnerPos.FindAction("Spawn5", throwIfNotFound: true);
         m_SpawnerPos_Spawn6 = m_SpawnerPos.FindAction("Spawn6", throwIfNotFound: true);
+        // UICanvas
+        m_UICanvas = asset.FindActionMap("UICanvas", throwIfNotFound: true);
+        m_UICanvas_OnArm1 = m_UICanvas.FindAction("OnArm1", throwIfNotFound: true);
+        m_UICanvas_OnArm2 = m_UICanvas.FindAction("OnArm2", throwIfNotFound: true);
+        m_UICanvas_OnArm3 = m_UICanvas.FindAction("OnArm3", throwIfNotFound: true);
+        m_UICanvas_OffArm1 = m_UICanvas.FindAction("OffArm1", throwIfNotFound: true);
+        m_UICanvas_OffArm2 = m_UICanvas.FindAction("OffArm2", throwIfNotFound: true);
+        m_UICanvas_OffArm3 = m_UICanvas.FindAction("OffArm3", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -440,6 +570,79 @@ public class @InputController : IInputActionCollection, IDisposable
         }
     }
     public SpawnerPosActions @SpawnerPos => new SpawnerPosActions(this);
+
+    // UICanvas
+    private readonly InputActionMap m_UICanvas;
+    private IUICanvasActions m_UICanvasActionsCallbackInterface;
+    private readonly InputAction m_UICanvas_OnArm1;
+    private readonly InputAction m_UICanvas_OnArm2;
+    private readonly InputAction m_UICanvas_OnArm3;
+    private readonly InputAction m_UICanvas_OffArm1;
+    private readonly InputAction m_UICanvas_OffArm2;
+    private readonly InputAction m_UICanvas_OffArm3;
+    public struct UICanvasActions
+    {
+        private @InputController m_Wrapper;
+        public UICanvasActions(@InputController wrapper) { m_Wrapper = wrapper; }
+        public InputAction @OnArm1 => m_Wrapper.m_UICanvas_OnArm1;
+        public InputAction @OnArm2 => m_Wrapper.m_UICanvas_OnArm2;
+        public InputAction @OnArm3 => m_Wrapper.m_UICanvas_OnArm3;
+        public InputAction @OffArm1 => m_Wrapper.m_UICanvas_OffArm1;
+        public InputAction @OffArm2 => m_Wrapper.m_UICanvas_OffArm2;
+        public InputAction @OffArm3 => m_Wrapper.m_UICanvas_OffArm3;
+        public InputActionMap Get() { return m_Wrapper.m_UICanvas; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(UICanvasActions set) { return set.Get(); }
+        public void SetCallbacks(IUICanvasActions instance)
+        {
+            if (m_Wrapper.m_UICanvasActionsCallbackInterface != null)
+            {
+                @OnArm1.started -= m_Wrapper.m_UICanvasActionsCallbackInterface.OnOnArm1;
+                @OnArm1.performed -= m_Wrapper.m_UICanvasActionsCallbackInterface.OnOnArm1;
+                @OnArm1.canceled -= m_Wrapper.m_UICanvasActionsCallbackInterface.OnOnArm1;
+                @OnArm2.started -= m_Wrapper.m_UICanvasActionsCallbackInterface.OnOnArm2;
+                @OnArm2.performed -= m_Wrapper.m_UICanvasActionsCallbackInterface.OnOnArm2;
+                @OnArm2.canceled -= m_Wrapper.m_UICanvasActionsCallbackInterface.OnOnArm2;
+                @OnArm3.started -= m_Wrapper.m_UICanvasActionsCallbackInterface.OnOnArm3;
+                @OnArm3.performed -= m_Wrapper.m_UICanvasActionsCallbackInterface.OnOnArm3;
+                @OnArm3.canceled -= m_Wrapper.m_UICanvasActionsCallbackInterface.OnOnArm3;
+                @OffArm1.started -= m_Wrapper.m_UICanvasActionsCallbackInterface.OnOffArm1;
+                @OffArm1.performed -= m_Wrapper.m_UICanvasActionsCallbackInterface.OnOffArm1;
+                @OffArm1.canceled -= m_Wrapper.m_UICanvasActionsCallbackInterface.OnOffArm1;
+                @OffArm2.started -= m_Wrapper.m_UICanvasActionsCallbackInterface.OnOffArm2;
+                @OffArm2.performed -= m_Wrapper.m_UICanvasActionsCallbackInterface.OnOffArm2;
+                @OffArm2.canceled -= m_Wrapper.m_UICanvasActionsCallbackInterface.OnOffArm2;
+                @OffArm3.started -= m_Wrapper.m_UICanvasActionsCallbackInterface.OnOffArm3;
+                @OffArm3.performed -= m_Wrapper.m_UICanvasActionsCallbackInterface.OnOffArm3;
+                @OffArm3.canceled -= m_Wrapper.m_UICanvasActionsCallbackInterface.OnOffArm3;
+            }
+            m_Wrapper.m_UICanvasActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @OnArm1.started += instance.OnOnArm1;
+                @OnArm1.performed += instance.OnOnArm1;
+                @OnArm1.canceled += instance.OnOnArm1;
+                @OnArm2.started += instance.OnOnArm2;
+                @OnArm2.performed += instance.OnOnArm2;
+                @OnArm2.canceled += instance.OnOnArm2;
+                @OnArm3.started += instance.OnOnArm3;
+                @OnArm3.performed += instance.OnOnArm3;
+                @OnArm3.canceled += instance.OnOnArm3;
+                @OffArm1.started += instance.OnOffArm1;
+                @OffArm1.performed += instance.OnOffArm1;
+                @OffArm1.canceled += instance.OnOffArm1;
+                @OffArm2.started += instance.OnOffArm2;
+                @OffArm2.performed += instance.OnOffArm2;
+                @OffArm2.canceled += instance.OnOffArm2;
+                @OffArm3.started += instance.OnOffArm3;
+                @OffArm3.performed += instance.OnOffArm3;
+                @OffArm3.canceled += instance.OnOffArm3;
+            }
+        }
+    }
+    public UICanvasActions @UICanvas => new UICanvasActions(this);
     public interface IPlayerActions
     {
         void OnArm1(InputAction.CallbackContext context);
@@ -456,5 +659,14 @@ public class @InputController : IInputActionCollection, IDisposable
         void OnSpawn4(InputAction.CallbackContext context);
         void OnSpawn5(InputAction.CallbackContext context);
         void OnSpawn6(InputAction.CallbackContext context);
+    }
+    public interface IUICanvasActions
+    {
+        void OnOnArm1(InputAction.CallbackContext context);
+        void OnOnArm2(InputAction.CallbackContext context);
+        void OnOnArm3(InputAction.CallbackContext context);
+        void OnOffArm1(InputAction.CallbackContext context);
+        void OnOffArm2(InputAction.CallbackContext context);
+        void OnOffArm3(InputAction.CallbackContext context);
     }
 }

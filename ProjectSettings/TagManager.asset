@@ -8,6 +8,8 @@ TagManager:
   - Arm
   - MainBody
   - MovingCollider
+  - IsPressedUI
+  - NotPressedUI
   layers:
   - Default
   - TransparentFX
