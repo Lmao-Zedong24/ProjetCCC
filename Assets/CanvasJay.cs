@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -24,6 +25,12 @@ public class CanvasJay : MonoBehaviour
                 _notPressedUI.Add(transform.gameObject);
             }
         }
+    }
+
+    public void SetArmInputKey(int index, string message)
+    {
+        _isPressedUI[index].GetComponentInChildren<TMP_Text>().text = message;
+        _notPressedUI[index].GetComponentInChildren<TMP_Text>().text = message;
     }
 
     void OnOnArm1(InputValue value)
