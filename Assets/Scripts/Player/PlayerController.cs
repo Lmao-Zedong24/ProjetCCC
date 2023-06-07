@@ -140,7 +140,7 @@ public class PlayerController : MonoBehaviour, IPlayerActions
             _arms[i].SetupArmInfo(armInfo);
 
             if (input.started)
-                _arms[i].ExtendArm();
+                _arms[i].ExtendArm(i);
 
             else if (input.canceled)
             {
@@ -158,7 +158,7 @@ public class PlayerController : MonoBehaviour, IPlayerActions
             return;
 
         if (phase == InputActionPhase.Started)
-            _arms[i].ExtendArm();
+            _arms[i].ExtendArm(i);
 
         if (phase == InputActionPhase.Canceled)
         {
