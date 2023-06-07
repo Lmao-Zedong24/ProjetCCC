@@ -152,6 +152,7 @@ public class Arm : MonoBehaviour
 
         staticPosWorld = null;
         _mainBody.constraints = mainConstraints;
+        _rbHand.useGravity = false;
 
         switch (state)
         {
@@ -160,6 +161,7 @@ public class Arm : MonoBehaviour
                 break;
 
             case EArmState.StaticOut:
+                _rbHand.useGravity = true;
                 break;
 
             case EArmState.Extend:
@@ -198,12 +200,13 @@ public class Arm : MonoBehaviour
     }
 
     //Both kinda same
-    public void ExtendArm()
+    public void ExtendArm(int index)
     {
         if (StopExtend(ArmLengthDot()))
             return;
 
         SetupArmState(EArmState.Extend);
+        StatsManager.Instance?.IncrementArm(index);
 
         localDirectionVec = transform.localPosition.normalized;
         currentVelocity = new Vector2(0f, 0f);
