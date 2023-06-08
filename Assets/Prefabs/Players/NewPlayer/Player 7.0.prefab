@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5506963456651244771}
   - component: {fileID: 9118722325958412709}
   - component: {fileID: 4457462376654375965}
+  - component: {fileID: 7714997133801621842}
   m_Layer: 6
   m_Name: Cylinder
   m_TagString: Untagged
@@ -109,6 +110,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7e0b59148a124945abfe5556e90d973, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!65 &7714997133801621842
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7068089218684271}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.2, y: 1, z: 1.0000001}
+  m_Center: {x: 0.00024420023, y: 0.00002670288, z: -0.00000008940696}
 --- !u!1 &1322922025487677173
 GameObject:
   m_ObjectHideFlags: 0
@@ -724,6 +738,7 @@ GameObject:
   - component: {fileID: 1483221340545650024}
   - component: {fileID: 2771378711187779630}
   - component: {fileID: 5830356806198301143}
+  - component: {fileID: 8876302316973528645}
   m_Layer: 6
   m_Name: Cylinder
   m_TagString: Untagged
@@ -820,6 +835,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7e0b59148a124945abfe5556e90d973, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!65 &8876302316973528645
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6404333652919938276}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.2, y: 1, z: 1.0000001}
+  m_Center: {x: 0.00024420023, y: 0.00002670288, z: -0.00000008940696}
 --- !u!1 &6844000643001247607
 GameObject:
   m_ObjectHideFlags: 0
@@ -1162,6 +1190,7 @@ GameObject:
   - component: {fileID: 4531689887250887241}
   - component: {fileID: 865628200346865423}
   - component: {fileID: 2071436924913537529}
+  - component: {fileID: 6391862452993313492}
   m_Layer: 6
   m_Name: Cylinder
   m_TagString: Untagged
@@ -1258,6 +1287,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7e0b59148a124945abfe5556e90d973, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!65 &6391862452993313492
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8256924975841039301}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.2, y: 1, z: 1.0000001}
+  m_Center: {x: 0.00024420023, y: 0.00002670288, z: -0.00000008940696}
 --- !u!1 &8652276820639740575
 GameObject:
   m_ObjectHideFlags: 0

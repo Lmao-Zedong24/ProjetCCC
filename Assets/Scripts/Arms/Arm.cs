@@ -20,12 +20,14 @@ public class Arm : MonoBehaviour
     private Vector2 localDirectionVec;
     private Vector3? staticPosWorld;
     private RigidbodyConstraints mainConstraints;
+    private bool _applyTorque;
+    private int _colNum;
 
-    HandCollider    _colHand;
-    Transform       _hand;
-    Rigidbody       _mainBody;
-    Rigidbody       _rbHand;
-    FixedJoint      _joint;
+    HandCollider _colHand;
+    Transform _hand;
+    Rigidbody _mainBody;
+    Rigidbody _rbHand;
+    FixedJoint _joint;
     PlayerController _playerController;
 
     ArmInfo _armInfo;
@@ -66,6 +68,8 @@ public class Arm : MonoBehaviour
 
     private void FixedUpdate()
     {
+        _rbHand.transform.localRotation = Quaternion.identity;
+
         if (ShouldBeInactive()) //check if need to be inactive
             SetupArmState(EArmState.StaticIn);
 
@@ -78,7 +82,10 @@ public class Arm : MonoBehaviour
             //_hand.localPosition = Vector2.Dot(_hand.localPosition, localDirectionVec) * localDirectionVec; //dirVec already 
         }
 
-        _hand.localPosition = Vector2.Dot(_hand.localPosition, localDirectionVec) * localDirectionVec; //dirVec already 
+        if (armState == EArmState.StaticIn)
+            _hand.localPosition = Vector3.zero;
+        else
+            _hand.localPosition = Vector2.Dot(_hand.localPosition, localDirectionVec) * localDirectionVec; //dirVec already 
 
         if (!isStaticState && !isCurentlySticking)
             _joint.connectedAnchor = _hand.localPosition;
@@ -144,15 +151,40 @@ public class Arm : MonoBehaviour
         //_joint.connectedAnchor = _hand.localPosition;
     }
 
+    public void DebugHand()
+    {
+        Vector2 localDir = (Vector2)(transform.rotation * transform.localPosition.normalized);
+        //var distance = MyCheckCollisions2D( transform.parent.position,
+        //                                    localDir,
+        //                                    _armInfo.maxLenght + transform.localPosition.magnitude,
+        //                                    _rbHand.transform.lossyScale.x / 1.9f);
+
+        //Vector2 distanceVec = 3 * localDir;
+        _hand.localPosition = Vector3.zero;
+        _joint.connectedAnchor = _hand.localPosition;
+
+        SetupArmState(EArmState.Extend);
+
+        Debug.Log("=====================================================================\n=====================================================================");
+    }
+
 
     bool SetupArmState(EArmState state)
     {
         if (armState == state)
             return false;
 
+        if (armState == EArmState.Extend && _applyTorque)
+        {
+            //_mainBody.constraints |= RigidbodyConstraints.FreezeRotation;
+            Invoke(nameof(ApplyTorque), 0.2f);
+            _applyTorque = false;
+        }
+
         staticPosWorld = null;
         _mainBody.constraints = mainConstraints;
         _rbHand.useGravity = false;
+        _colNum = 0;
 
         switch (state)
         {
@@ -161,7 +193,7 @@ public class Arm : MonoBehaviour
                 break;
 
             case EArmState.StaticOut:
-                _rbHand.useGravity = true;
+                Invoke(nameof(ApplyGravity), 0.5f);
                 break;
 
             case EArmState.Extend:
@@ -183,16 +215,7 @@ public class Arm : MonoBehaviour
             //    break;
         }
 
-        if (armState == EArmState.Extend && 
-            (_colHand.hasCollision ||
-            (_colHand.timeSinceCollisionSec < COLLISION_BUFFER_SEC && staticPosWorld.HasValue)))
-        {
-            //_mainBody.constraints |= RigidbodyConstraints.FreezeRotation;
-            _rbHand.angularVelocity = Vector3.zero;
-            _mainBody.angularVelocity = Vector3.zero;
 
-            ApplyTorque();
-        }
 
         armState = state;
 
@@ -248,30 +271,46 @@ public class Arm : MonoBehaviour
         }
     }
 
-    private void ApplyTorque()
+    private void ApplyTorque(int i = 0)
     {
+        //new with normal
         _mainBody.angularVelocity = Vector3.zero;
         _rbHand.angularVelocity = Vector3.zero;
-        float dot = Vector2.Dot(_mainBody.rotation * localDirectionVec, new Vector2(1f, 0f));
 
-        //vecrsion 6
-        //dot = dot / 4f + (dot > 0? 1 : -1) * 0.75f;
-        //_mainBody.AddRelativeTorque(0f, 0f, Mathf.Clamp(dot, -1, 1) * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
+        float percent = 1f;
+        Vector2 projected = _colHand._averageNormal;
+        Vector3 myAngleVec = -(_mainBody.rotation * localDirectionVec).normalized;
 
-        //vecrsion 5
-        //dot = (dot > 0? 1 : -1) - dot / 2f;
-        //_mainBody.AddRelativeTorque(0f, 0f, Mathf.Clamp(dot, -1, 1) * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
+        float anglePercent = Vector2.Angle(myAngleVec, projected) / 90f;
+        float dir = _hand.position.x <= _mainBody.position.x? 1f : -1f;
+        percent *= Mathf.Clamp(anglePercent, 0, 1);
 
-        //vecrsion 4
-        dot = dot/2f + (dot > 0? 1 : -1) * 0.5f;
-        _mainBody.AddRelativeTorque(0f, 0f, -dot * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
+        Debug.Log("______________________________________ " + i);
 
+        _mainBody.AddRelativeTorque(0f, 0f, percent * dir * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
+        return;
+
+        //percent += Mathf.Clamp(_mainBody.velocity.sqrMagnitude /16f, 0, 1); //artifitial damping if slow
+        //percent += _hand.localPosition.sqrMagnitude / (2f * _armInfo.maxLenght * _armInfo.maxLenght);
+        //Vector2 projected = Vector2.Perpendicular(_colHand.collisionNormal);
+        //projected.x = Mathf.Abs(projected.x);
+        //projected.y = Mathf.Abs(projected.y);
+        //var val = ((projected.y * 10f * 10f * _hand.localPosition.sqrMagnitude / (_armInfo.maxLenght * _armInfo.maxLenght)) / 100f);
+        //percent += Mathf.Clamp(val, 0, 0.5f);
+
+        //_mainBody.angularVelocity = Vector3.zero;
+        //_rbHand.angularVelocity = Vector3.zero;
+        //float dot = Vector2.Dot(_mainBody.rotation * localDirectionVec, new Vector2(1f, 0f));
+
+        //vecrsion 3
+        //_mainBody.AddRelativeTorque(0f, 0f, Mathf.Clamp(dot > 0 ? 1 - dot: 1 + dot , -1, 1) * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
 
         //version 2
         //_mainBody.AddRelativeTorque(0f, 0f, (dot < 0 ? 1 : -1) * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
+        //* (dot < 0.3 && dot > -0.3 ? 0 : 1)
 
         //version 1
-        //_mainBody.AddRelativeTorque(0f, 0f, -Mathf.Clamp(dot, -1, 1) * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
+        //_mainBody.AddRelativeTorque(0f, 0f, -Mathf.Clamp(anglePercent, -1, 1) * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
 
         //old
         //_mainBody.AddRelativeTorque(0f, 0f, (dot > 0 ? 1 : -1) * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
@@ -314,11 +353,12 @@ public class Arm : MonoBehaviour
         if (_colHand.hasCollision ||
             (_colHand.timeSinceCollisionSec < COLLISION_BUFFER_SEC && staticPosWorld.HasValue))
         {
-            staticPosWorld ??= _rbHand.transform.position;
+            staticPosWorld ??= _hand.transform.position;
             _rbHand.transform.position = staticPosWorld.Value;
             _mainBody.constraints |= RigidbodyConstraints.FreezeRotation;
             _mainBody.angularVelocity = Vector3.zero;
             _rbHand.angularVelocity = Vector3.zero;
+            _applyTorque = true;
 
             if (_playerController.isLinked) //dont add force
                 return;
@@ -341,23 +381,22 @@ public class Arm : MonoBehaviour
             }
             _mainBody.AddForce((Vector3)force, ForceMode.VelocityChange);
             _armInfo.lastImpactForce = force;
-
             return;
         }
 
-        if (staticPosWorld.HasValue)
-        {
-            ApplyTorque();
-        }
+        //if (staticPosWorld.HasValue)
+        //{
+        //    ApplyTorque(0);
+        //}
 
         staticPosWorld = null;
         _mainBody.constraints = mainConstraints;
+        float maxDistance = ((Vector2)_hand.localPosition - posLocal).magnitude / 2f;
 
-
-        float overshootLenght = MyCheckCollisions2D(    _hand.position,
-                                                        transform.rotation * localDirectionVec,        //world
-                                                        (_hand.localPosition - (Vector3)posLocal).magnitude / 2,
-                                                        _rbHand.transform.lossyScale.x / 1.9f);
+        float overshootLenght = maxDistance - MyCheckCollisions2D(  _hand.position,
+                                                                    transform.rotation * localDirectionVec,        //world
+                                                                    maxDistance,
+                                                                    _rbHand.transform.lossyScale.x / 1.9f);
         //float overshootLenght = MyCheckCollisions2D(    colHand,
         //                                                hand.localPosition,
         //                                                localDirectionVec,        //world
@@ -380,7 +419,12 @@ public class Arm : MonoBehaviour
     private void SetupHandTagCollisions()
     {
         initializedHandTagCollisions = true;
+    }
 
+    private void ApplyGravity()
+    {
+        if (armState == EArmState.StaticOut)
+            _rbHand.useGravity = true;
     }
 
     void StickToMovingCollider(Collision collision)
@@ -405,11 +449,11 @@ public class Arm : MonoBehaviour
     /// <param name="endPosWorld"></param>
     /// <param name="collider"></param>
     /// <returns> overshoot length (if hit)</returns>
-    private float MyCheckCollisions2D(Vector2 posWorld, Vector2 dirWorld, float maxDistance, float radius)
+    private float MyCheckCollisions2D(Vector2 posWorld, Vector2 dirWorld, float maxDistance, float radius, int LayerMask = 2)
     {
         Ray ray = new Ray(posWorld, dirWorld);
-        Debug.DrawLine(posWorld + dirWorld * radius, posWorld + dirWorld * (maxDistance + radius), Color.red);
-        //Debug.DrawLine(posWorld, posWorld + dirWorld * radius, Color.blue, 3f);
+        Debug.DrawLine(posWorld + dirWorld * radius, posWorld + dirWorld * (maxDistance + radius), Color.red, 5f);
+        //Debug.DrawLine(posWorld, posWorld + (Vector2)(Quaternion.Euler(0,0,90) * (dirWorld * radius)), Color.blue, 3f);
 
 
         //if (Physics.Raycast(ray, out RaycastHit hitInfo, (maxDistance + radius)))
@@ -419,11 +463,11 @@ public class Arm : MonoBehaviour
             //sph.gameObject.transform.SetPositionAndRotation(posWorld, Quaternion.identity);
             //sph.GetComponent<Collider>().enabled = false;
 
-            return maxDistance - hitInfo.distance;
+            return hitInfo.distance;
         }
 
         //no hit 
-        return 0f;
+        return maxDistance;
     }
 
 

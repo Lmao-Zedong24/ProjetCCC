@@ -5,7 +5,6 @@ using UnityEngine.InputSystem.XR;
 
 public class StatsManager : Singleton<StatsManager>
 {
-    @InputController    _inputs;
     GameObject          _player;
     PlayerController    _controller;
     Rigidbody           _mainBody;
@@ -26,8 +25,6 @@ public class StatsManager : Singleton<StatsManager>
         _player ??= GameObject.FindGameObjectWithTag("MainBody");
         _controller = _player?.GetComponent<PlayerController>();
         _mainBody = _player.GetComponent<Rigidbody>();
-        _inputs = new @InputController();
-
 
 
         StartCoroutine(HeightStatsRoutine());
