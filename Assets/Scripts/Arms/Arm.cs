@@ -21,7 +21,7 @@ public class Arm : MonoBehaviour
     private Vector3? staticPosWorld;
     private RigidbodyConstraints mainConstraints;
     private bool _applyTorque;
-    private int _colNum;
+    private int _collNum;
 
     HandCollider _colHand;
     Transform _hand;
@@ -174,17 +174,17 @@ public class Arm : MonoBehaviour
         if (armState == state)
             return false;
 
-        if (armState == EArmState.Extend && _applyTorque)
+        if (staticPosWorld.HasValue && _applyTorque)
         {
             //_mainBody.constraints |= RigidbodyConstraints.FreezeRotation;
-            Invoke(nameof(ApplyTorque), 0.2f);
-            _applyTorque = false;
+            ApplyTorque();
         }
 
+        _applyTorque = false;
         staticPosWorld = null;
         _mainBody.constraints = mainConstraints;
         _rbHand.useGravity = false;
-        _colNum = 0;
+        _collNum = 0;
 
         switch (state)
         {
@@ -273,22 +273,27 @@ public class Arm : MonoBehaviour
 
     private void ApplyTorque(int i = 0)
     {
+        _collNum++;
+
         //new with normal
         _mainBody.angularVelocity = Vector3.zero;
         _rbHand.angularVelocity = Vector3.zero;
+        //float dot = Vector2.Dot(_mainBody.rotation * localDirectionVec, new Vector2(1f, 0f));
 
         float percent = 1f;
+        //float percent = 1f + Mathf.Clamp01(_mainBody.velocity.sqrMagnitude / 25f) / 2f;
         Vector2 projected = _colHand._averageNormal;
         Vector3 myAngleVec = -(_mainBody.rotation * localDirectionVec).normalized;
 
         float anglePercent = Vector2.Angle(myAngleVec, projected) / 90f;
-        float dir = _hand.position.x <= _mainBody.position.x? 1f : -1f;
-        percent *= Mathf.Clamp(anglePercent, 0, 1);
+        float dir = _hand.position.x <= _mainBody.position.x ? 1f : -1f;
 
-        Debug.Log("______________________________________ " + i);
+        percent *= Mathf.Clamp(anglePercent, 0, 1);
+        Debug.Log("pplyTorquepplyTorquepplyTorquepplyTorquepplyTorquepplyTorquepplyTorque: " + percent * dir + ", " + _colHand._averageNormal);
 
         _mainBody.AddRelativeTorque(0f, 0f, percent * dir * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
         return;
+
 
         //percent += Mathf.Clamp(_mainBody.velocity.sqrMagnitude /16f, 0, 1); //artifitial damping if slow
         //percent += _hand.localPosition.sqrMagnitude / (2f * _armInfo.maxLenght * _armInfo.maxLenght);
@@ -356,9 +361,9 @@ public class Arm : MonoBehaviour
             staticPosWorld ??= _hand.transform.position;
             _rbHand.transform.position = staticPosWorld.Value;
             _mainBody.constraints |= RigidbodyConstraints.FreezeRotation;
-            _mainBody.angularVelocity = Vector3.zero;
-            _rbHand.angularVelocity = Vector3.zero;
-            _applyTorque = true;
+
+            if (_collNum == 0)
+                _applyTorque = true;
 
             if (_playerController.isLinked) //dont add force
                 return;
@@ -384,10 +389,12 @@ public class Arm : MonoBehaviour
             return;
         }
 
-        //if (staticPosWorld.HasValue)
-        //{
-        //    ApplyTorque(0);
-        //}
+        if (staticPosWorld.HasValue && _applyTorque)
+        {
+            //_mainBody.constraints |= RigidbodyConstraints.FreezeRotation;
+            ApplyTorque();
+            _applyTorque = false;
+        }
 
         staticPosWorld = null;
         _mainBody.constraints = mainConstraints;
