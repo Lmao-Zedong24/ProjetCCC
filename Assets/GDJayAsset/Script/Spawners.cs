@@ -18,6 +18,9 @@ public class Spawners : MonoBehaviour
 
     public void Start()
     {
+        if (spawn1 == null)
+            return;
+
         playerGameObject.transform.position = spawn1.transform.position;
         Quaternion newRotation = Quaternion.Euler(180f, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
         playerGameObject.transform.rotation = newRotation;
