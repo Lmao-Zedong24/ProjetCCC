@@ -36,15 +36,30 @@ public class CanvasJay : MonoBehaviour
                 _notPressedUI.Add(transform.gameObject);
             }
         }
+
+        StartCoroutine(nameof(StartChronoRoutine));
     }
 
     public void Update()
     {
-        if(ChronoCanStart == true && IsalreadyStarted == false)
+
+    }
+
+    IEnumerator StartChronoRoutine()
+    {
+        var wait = new WaitForSeconds(0.2f);
+
+        while (true)
         {
-            StartChronometer();
-            IsalreadyStarted = true;
-            ChronoCanStart = false;
+            if (ChronoCanStart == true && IsalreadyStarted == false)
+            {
+                StartChronometer();
+                IsalreadyStarted = true;
+                ChronoCanStart = false;
+
+            }
+
+            yield return wait;
         }
     }
 
