@@ -2,16 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.ProBuilder;
 
 public class HandCollider : MonoBehaviour
 {
     Arm _arm;
 
-    HashSet<GameObject> _collisions = new HashSet<GameObject>();
     public float timeSinceCollisionSec { get; private set; } = 0f;
-    public bool hasCollision { get => _collisions.Count != 0; }
-    public Vector2 collisionNormal { get; private set; }
+    public bool hasCollision { get => _collisionNormals.Count != 0; }
+    public Vector2 _averageNormal { get; private set; } = Vector2.zero;
 
+    Dictionary<GameObject, Vector2> _collisionNormals = new Dictionary<GameObject, Vector2>();
     private void Awake()
     {
         _arm = GetComponentInParent<Arm>();
@@ -19,43 +20,60 @@ public class HandCollider : MonoBehaviour
 
     void Update()
     {
-        if (_collisions.Count != 0)
+        if (_collisionNormals.Count != 0)
             return;
 
         timeSinceCollisionSec += Time.deltaTime;
     }
 
-    void OnCollisionEnter(Collision collision)
+    public void DebugHand()
     {
-        if (_collisions.Count == 0)
-            timeSinceCollisionSec = 0f;
+        _arm.DebugHand();
+    }
 
-        _collisions.Add(collision.gameObject);
+    private void CalculateNewAverageNormal()
+    {
+        Vector2 sumNormals = Vector2.zero;
+        foreach (var pair in _collisionNormals)
+            sumNormals += pair.Value;
 
-        var normalSum = Vector2.zero;
+        _averageNormal = sumNormals.normalized;
+    }
 
+    private void AddCollisionNormals(Collision collision)
+    {
+        if (_collisionNormals.ContainsKey(collision.gameObject))
+            return;
+
+        Vector2 sumNormals = Vector2.zero;
         foreach (var point in collision.contacts)
-            normalSum += (Vector2)point.normal;
+            sumNormals += (Vector2)point.normal;
 
-        collisionNormal = (normalSum / (float)collision.contacts.Length).normalized;
-        //collisionNormal = ((collisionNormal + (normalSum / (float)collision.contacts.Length).normalized) / 2f).normalized;
+        Vector2 normal = (sumNormals / (float)collision.contacts.Length).normalized;
 
         Debug.Log("On: collisionNormal");
+        _collisionNormals.Add(collision.gameObject, normal);
+        CalculateNewAverageNormal();
+    }
+
+    private void RemoveCollisionNormals(Collision collision)
+    {
+        if (_collisionNormals.Remove(collision.gameObject))
+            CalculateNewAverageNormal();
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if(_collisionNormals.Remove(collision.gameObject));
+            AddCollisionNormals(collision);
+
+        if (_collisionNormals.Count == 0)
+            timeSinceCollisionSec = 0f;
 
         _arm.TryStick(collision);
     }
-
     void OnCollisionExit(Collision collision)
     {
-        _collisions.Remove(collision.gameObject);
-
-        //if (_collisions.Count == 0)
-        //    Invoke(nameof(ResetNormal), 3 * Time.fixedDeltaTime);
-    }
-
-    void ResetNormal()
-    {
-        //Debug.Log("Off : " + collisionNormal);
-        //collisionNormal = Vector3.zero;
+        RemoveCollisionNormals(collision);
     }
 }
