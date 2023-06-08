@@ -10,6 +10,8 @@ TagManager:
   - MovingCollider
   - IsPressedUI
   - NotPressedUI
+  - BockforWallJump
+  - WallJump
   layers:
   - Default
   - TransparentFX
@@ -18,8 +20,8 @@ TagManager:
   - Water
   - UI
   - Player
-  - 
-  - 
+  - Spring
+  - WallforSprings
   - 
   - 
   - 
