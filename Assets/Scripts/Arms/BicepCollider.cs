@@ -6,7 +6,6 @@ public class BicepCollider : MonoBehaviour
 {
     Transform   _bottom;
     Transform   _top;
-    HandCollider _hand;
 
 
     // Start is called before the first frame update
@@ -14,7 +13,7 @@ public class BicepCollider : MonoBehaviour
     {
         _bottom =   transform.parent.parent; //arm
         _top =      transform.parent;        //hand
-        _hand =     GetComponentInParent<HandCollider>();
+
         //Vector3 upwards = transform.parent.position - transform.parent.parent.position;
         //Vector3 forward = Quaternion.Euler(0, 0, -90f) * upwards;
         //transform.rotation = Quaternion.LookRotation(upwards);
@@ -29,17 +28,5 @@ public class BicepCollider : MonoBehaviour
         var newScale = transform.localScale;
         newScale.y = val;
         transform.localScale = newScale;
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.layer != LayerMask.NameToLayer("Player"))
-            _hand.DebugHand();
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.gameObject.layer != LayerMask.NameToLayer("Player"))
-            _hand.DebugHand();
     }
 }

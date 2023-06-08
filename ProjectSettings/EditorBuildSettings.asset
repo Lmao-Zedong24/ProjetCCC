@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/JayFinalTesting.unity
+    guid: acc53404bd9e77b43bacd83f0319806b
   m_configObjects: {}
