@@ -66,6 +66,8 @@ public class Arm : MonoBehaviour
 
     private void FixedUpdate()
     {
+        _rbHand.transform.localRotation = Quaternion.identity;
+
         if (ShouldBeInactive()) //check if need to be inactive
             SetupArmState(EArmState.StaticIn);
 
@@ -161,7 +163,7 @@ public class Arm : MonoBehaviour
                 break;
 
             case EArmState.StaticOut:
-                _rbHand.useGravity = true;
+                Invoke(nameof(ApplyGravity), 0.5f);
                 break;
 
             case EArmState.Extend:
@@ -188,10 +190,7 @@ public class Arm : MonoBehaviour
             (_colHand.timeSinceCollisionSec < COLLISION_BUFFER_SEC && staticPosWorld.HasValue)))
         {
             //_mainBody.constraints |= RigidbodyConstraints.FreezeRotation;
-            _rbHand.angularVelocity = Vector3.zero;
-            _mainBody.angularVelocity = Vector3.zero;
-
-            ApplyTorque();
+            ApplyTorque(1);
         }
 
         armState = state;
@@ -248,11 +247,36 @@ public class Arm : MonoBehaviour
         }
     }
 
-    private void ApplyTorque()
+    private void ApplyTorque(int i)
     {
+        //new with normal
         _mainBody.angularVelocity = Vector3.zero;
         _rbHand.angularVelocity = Vector3.zero;
-        float dot = Vector2.Dot(_mainBody.rotation * localDirectionVec, new Vector2(1f, 0f));
+
+        float percent = 1f;
+        Vector2 projected = _colHand.collisionNormal;
+        Vector3 myAngleVec = -(_mainBody.rotation * localDirectionVec).normalized;
+
+        float anglePercent = Vector2.Angle(myAngleVec, projected) / 90f;
+        float dir = _hand.position.x <= _mainBody.position.x? 1f : -1f;
+
+        percent *= Mathf.Clamp(anglePercent, 0, 1);
+        Debug.Log("pplyTorquepplyTorquepplyTorquepplyTorquepplyTorquepplyTorquepplyTorque: " + i);
+
+        _mainBody.AddRelativeTorque(0f, 0f, percent * dir * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
+        return;
+
+        //percent += Mathf.Clamp(_mainBody.velocity.sqrMagnitude /16f, 0, 1); //artifitial damping if slow
+        //percent += _hand.localPosition.sqrMagnitude / (2f * _armInfo.maxLenght * _armInfo.maxLenght);
+        //Vector2 projected = Vector2.Perpendicular(_colHand.collisionNormal);
+        //projected.x = Mathf.Abs(projected.x);
+        //projected.y = Mathf.Abs(projected.y);
+        //var val = ((projected.y * 10f * 10f * _hand.localPosition.sqrMagnitude / (_armInfo.maxLenght * _armInfo.maxLenght)) / 100f);
+        //percent += Mathf.Clamp(val, 0, 0.5f);
+
+        //_mainBody.angularVelocity = Vector3.zero;
+        //_rbHand.angularVelocity = Vector3.zero;
+        //float dot = Vector2.Dot(_mainBody.rotation * localDirectionVec, new Vector2(1f, 0f));
 
         //vecrsion 3
         //_mainBody.AddRelativeTorque(0f, 0f, Mathf.Clamp(dot > 0 ? 1 - dot: 1 + dot , -1, 1) * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
@@ -262,7 +286,7 @@ public class Arm : MonoBehaviour
         //* (dot < 0.3 && dot > -0.3 ? 0 : 1)
 
         //version 1
-        _mainBody.AddRelativeTorque(0f, 0f, -Mathf.Clamp(dot, -1, 1) * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
+        //_mainBody.AddRelativeTorque(0f, 0f, -Mathf.Clamp(anglePercent, -1, 1) * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
 
         //old
         //_mainBody.AddRelativeTorque(0f, 0f, (dot > 0 ? 1 : -1) * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
@@ -338,7 +362,7 @@ public class Arm : MonoBehaviour
 
         if (staticPosWorld.HasValue)
         {
-            ApplyTorque();
+            ApplyTorque(0);
         }
 
         staticPosWorld = null;
@@ -371,7 +395,12 @@ public class Arm : MonoBehaviour
     private void SetupHandTagCollisions()
     {
         initializedHandTagCollisions = true;
+    }
 
+    private void ApplyGravity()
+    {
+        if (armState == EArmState.StaticOut)
+            _rbHand.useGravity = true;
     }
 
     void StickToMovingCollider(Collision collision)
