@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7158359382072148321}
   - component: {fileID: 7158359382072148349}
   - component: {fileID: 7158359382072148348}
+  - component: {fileID: 7758414303619513819}
   m_Layer: 0
   m_Name: Platform
   m_TagString: MovingCollider
@@ -129,3 +130,16 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 122
   m_CollisionDetection: 3
+--- !u!65 &7758414303619513819
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7158359382072148326}
+  m_Material: {fileID: 13400000, guid: 465006a98f7f6504383a47da97e68d2f, type: 2}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
