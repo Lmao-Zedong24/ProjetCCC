@@ -6942,11 +6942,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 706699233}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &712404614 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 9055284934642167153, guid: f5b48c28276f0a345a977a358ed30cff, type: 3}
-  m_PrefabInstance: {fileID: 9055284935077430263}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &716718681
 GameObject:
   m_ObjectHideFlags: 0
@@ -10146,50 +10141,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1555141845076732308, guid: ed39c1a8947dc494390952ba65a20e1a, type: 3}
-      propertyPath: m_RootOrder
-      value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 1555141845076732308, guid: ed39c1a8947dc494390952ba65a20e1a, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 203.21729
-      objectReference: {fileID: 0}
-    - target: {fileID: 1555141845076732308, guid: ed39c1a8947dc494390952ba65a20e1a, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 155
-      objectReference: {fileID: 0}
-    - target: {fileID: 1731526813480103083, guid: ed39c1a8947dc494390952ba65a20e1a, type: 3}
-      propertyPath: m_fontSizeBase
-      value: 42.78
-      objectReference: {fileID: 0}
-    - target: {fileID: 2735952009060919572, guid: ed39c1a8947dc494390952ba65a20e1a, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4182620769161596501, guid: ed39c1a8947dc494390952ba65a20e1a, type: 3}
-      propertyPath: m_RootOrder
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 5659917448746944761, guid: ed39c1a8947dc494390952ba65a20e1a, type: 3}
-      propertyPath: m_margin.z
-      value: 40.4375
-      objectReference: {fileID: 0}
-    - target: {fileID: 5659917448746944763, guid: ed39c1a8947dc494390952ba65a20e1a, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5659917448747150119, guid: ed39c1a8947dc494390952ba65a20e1a, type: 3}
-      propertyPath: m_RootOrder
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5659917448911702760, guid: ed39c1a8947dc494390952ba65a20e1a, type: 3}
-      propertyPath: m_RootOrder
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5659917449484146715, guid: ed39c1a8947dc494390952ba65a20e1a, type: 3}
-      propertyPath: m_RootOrder
-      value: 4
-      objectReference: {fileID: 0}
     - target: {fileID: 5659917449507500677, guid: ed39c1a8947dc494390952ba65a20e1a, type: 3}
       propertyPath: m_Name
       value: CanvasFinal
@@ -10276,42 +10227,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5659917449507500697, guid: ed39c1a8947dc494390952ba65a20e1a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5659917449507500702, guid: ed39c1a8947dc494390952ba65a20e1a, type: 3}
-      propertyPath: player
-      value: 
-      objectReference: {fileID: 1586745980}
-    - target: {fileID: 5659917449507500702, guid: ed39c1a8947dc494390952ba65a20e1a, type: 3}
-      propertyPath: finishBox
-      value: 
-      objectReference: {fileID: 712404614}
-    - target: {fileID: 5659917449587050683, guid: ed39c1a8947dc494390952ba65a20e1a, type: 3}
-      propertyPath: m_RootOrder
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5659917450033079182, guid: ed39c1a8947dc494390952ba65a20e1a, type: 3}
-      propertyPath: m_RootOrder
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 5659917450301442808, guid: ed39c1a8947dc494390952ba65a20e1a, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5659917450301442809, guid: ed39c1a8947dc494390952ba65a20e1a, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5659917450301442814, guid: ed39c1a8947dc494390952ba65a20e1a, type: 3}
-      propertyPath: m_margin.z
-      value: 42.10669
-      objectReference: {fileID: 0}
-    - target: {fileID: 5659917450317827830, guid: ed39c1a8947dc494390952ba65a20e1a, type: 3}
-      propertyPath: m_RootOrder
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 7580475134758698094, guid: ed39c1a8947dc494390952ba65a20e1a, type: 3}
-      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
