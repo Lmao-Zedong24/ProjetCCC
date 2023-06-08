@@ -254,15 +254,24 @@ public class Arm : MonoBehaviour
         _rbHand.angularVelocity = Vector3.zero;
         float dot = Vector2.Dot(_mainBody.rotation * localDirectionVec, new Vector2(1f, 0f));
 
-        //vecrsion 3
-        //_mainBody.AddRelativeTorque(0f, 0f, Mathf.Clamp(dot > 0 ? 1 - dot: 1 + dot , -1, 1) * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
+        //vecrsion 6
+        //dot = dot / 4f + (dot > 0? 1 : -1) * 0.75f;
+        //_mainBody.AddRelativeTorque(0f, 0f, Mathf.Clamp(dot, -1, 1) * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
+
+        //vecrsion 5
+        //dot = (dot > 0? 1 : -1) - dot / 2f;
+        //_mainBody.AddRelativeTorque(0f, 0f, Mathf.Clamp(dot, -1, 1) * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
+
+        //vecrsion 4
+        dot = dot/2f + (dot > 0? 1 : -1) * 0.5f;
+        _mainBody.AddRelativeTorque(0f, 0f, -dot * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
+
 
         //version 2
         //_mainBody.AddRelativeTorque(0f, 0f, (dot < 0 ? 1 : -1) * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
-        //* (dot < 0.3 && dot > -0.3 ? 0 : 1)
 
         //version 1
-        _mainBody.AddRelativeTorque(0f, 0f, -Mathf.Clamp(dot, -1, 1) * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
+        //_mainBody.AddRelativeTorque(0f, 0f, -Mathf.Clamp(dot, -1, 1) * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
 
         //old
         //_mainBody.AddRelativeTorque(0f, 0f, (dot > 0 ? 1 : -1) * _armInfo.rotationMultiplier, ForceMode.VelocityChange);
