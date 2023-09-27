@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 public class FallingPlatform : MonoBehaviour
 {

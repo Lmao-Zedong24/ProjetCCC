@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Runtime.CompilerServices;
-using TMPro.EditorUtilities;
 using UnityEngine;
 
 public class Arm : MonoBehaviour
