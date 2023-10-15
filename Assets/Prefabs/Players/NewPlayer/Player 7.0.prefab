@@ -1112,13 +1112,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8237186853253872832}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: 0.49874386, w: 0.8667494}
+  m_LocalPosition: {x: -1.91, y: 1.12, z: 0}
+  m_LocalScale: {x: 1.3877759, y: 2.012607, z: 1.3877759}
   m_Children: []
   m_Father: {fileID: 8058473517344862775}
   m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 59.834}
 --- !u!114 &3094540480678313289
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1133,9 +1133,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _virtualCamera: {fileID: 0}
   zoomOutSpeedDegreePerSecond: 2
-  zoomInSpeedDegreePerSecond: 5
+  zoomInSpeedDegreePerSecond: 2
   defaultFOVDegree: 10
-  zoomOutFOVDegree: 50
+  zoomOutFOVDegree: 14
 --- !u!65 &4818732617744066426
 BoxCollider:
   m_ObjectHideFlags: 0
