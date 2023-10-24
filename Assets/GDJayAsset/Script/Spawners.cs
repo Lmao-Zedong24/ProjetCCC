@@ -10,6 +10,7 @@ public class Spawners : MonoBehaviour
     public GameObject spawn4;
     public GameObject spawn5;
     public GameObject spawn6;
+    public GameObject spawn7;
 
     public GameObject   playerGameObject;
     public Rigidbody    rb;
@@ -48,18 +49,23 @@ public class Spawners : MonoBehaviour
     {
         SpawnPlayer(spawn6.transform.position);
     }
+    
+    void OnSpawn7(InputValue value)
+    {
+        SpawnPlayer(spawn7.transform.position);
+    }
 
 
     private void UnfreezeRotation()
     {
-        // On réactive la rotation de l'objet
+        // On rÃ©active la rotation de l'objet
         rb.constraints = oldConst;
     }
 
     void SpawnPlayer(Vector3 spawnPos)
     {
         playerGameObject.transform.position = spawnPos;
-        Quaternion newRotation = Quaternion.Euler(0, 0, 180f);
+        Quaternion newRotation = Quaternion.Euler(0, 180, 180f);
         playerGameObject.transform.rotation = newRotation;
         oldConst = rb.constraints;
         rb.velocity = new Vector3(0, 0, 0);
