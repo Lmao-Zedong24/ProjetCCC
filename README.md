@@ -1,4 +1,4 @@
-#ProjetCCC - BALZY
+# ProjetCCC - BALZY
 
 ## 3D platforming game built with Unity. 
 
