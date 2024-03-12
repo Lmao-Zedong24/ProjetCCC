@@ -1,6 +1,6 @@
 #ProjetCCC - BALZY
 
-## A 3D platforming game built with Unity. 
+## 3D platforming game built with Unity. 
 
 This is a ISART Digital final school project focused on building an interesting character controller. The team consisted of 4 game designer and 1 programmer. 
 Our goal was to create a simple controller that would be polished over many iterations. For most of us, this was our first collaboration project, and we leared enormously through trail and error.
