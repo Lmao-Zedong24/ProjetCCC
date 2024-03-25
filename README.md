@@ -17,9 +17,8 @@ https://github.com/Lmao-Zedong24/ProjetCCC/assets/100137824/0e81abd9-7f0b-4067-a
 ![ProjetCCC-JayTesting1 0-PCMacLinuxStandalone-Unity2020 3 12f1Personal_DX11_2024-03-2422-50-07-ezgif com-video-to-gif-converter](https://github.com/Lmao-Zedong24/ProjetCCC/assets/100137824/5b050f63-1285-4f8b-beb6-b74dca0edf3c)
 ![ProjetCCC-JayTestingV2-PCMacLinuxStandalone-Unity2020 3 12f1Personal__DX11_2024-03-2500-53-12-ezgif com-video-to-gif-converter](https://github.com/Lmao-Zedong24/ProjetCCC/assets/100137824/4f94681f-3930-4295-8aa6-040dee75f2b0)
 
-### Cut Core Feature
+### Cut Stick Feature
 ![ProjetCCC-RigaScene-PCMacLinuxStandalone-Unity2020 3 12f1Personal__DX11_2024-03-2500-20-16-ezgif com-video-to-gif-converter](https://github.com/Lmao-Zedong24/ProjetCCC/assets/100137824/266a84f0-4a25-4d92-b485-f9a16675836d)
-
 
 ### Workflow
 Our workflow consisted of:
