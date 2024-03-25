@@ -10,14 +10,15 @@ The game is in the style of Getting Over It and Jump King, where you could lose 
 
 <!-- https://github.com/Lmao-Zedong24/ProjetCCC/assets/ -->
 ### Finial Product
-https://github.com/Lmao-Zedong24/ProjetCCC/assets/100137824/081032df-39c3-4924-9030-90df8e0212f3
-
-
+https://github.com/Lmao-Zedong24/ProjetCCC/assets/100137824/0e81abd9-7f0b-4067-a501-ba586f59ac36
 
 ### Iterations 
-
+![ProjetCCC-JayTesting1 0-PCMacLinuxStandalone-Unity2020 3 12f1Personal_DX11_2024-03-2422-50-07-ezgif com-video-to-gif-converter](https://github.com/Lmao-Zedong24/ProjetCCC/assets/100137824/5b050f63-1285-4f8b-beb6-b74dca0edf3c)
+![ProjetCCC-JayTestingV2-PCMacLinuxStandalone-Unity2020 3 12f1Personal__DX11_2024-03-2500-53-12-ezgif com-video-to-gif-converter](https://github.com/Lmao-Zedong24/ProjetCCC/assets/100137824/4f94681f-3930-4295-8aa6-040dee75f2b0)
+![ProjetCCC-SampleScene-PCMacLinuxStandalone-Unity2020 3 12f1Personal_DX11_2024-03-2422-41-47-ezgif com-video-to-gif-converter](https://github.com/Lmao-Zedong24/ProjetCCC/assets/100137824/67b18900-088a-4273-a76d-7fa7a138b7b3)
 
 ### Cut Core Feature
+![ProjetCCC-RigaScene-PCMacLinuxStandalone-Unity2020 3 12f1Personal__DX11_2024-03-2500-20-16-ezgif com-video-to-gif-converter](https://github.com/Lmao-Zedong24/ProjetCCC/assets/100137824/266a84f0-4a25-4d92-b485-f9a16675836d)
 
 
 ### Workflow
