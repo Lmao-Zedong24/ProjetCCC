@@ -8,9 +8,18 @@ We ended up with a polished platformer with an intentionally "clunky" controller
 The game is in the style of Getting Over It and Jump King, where you could lose a lot of progress if you missed a platforming section. 
 
 
-https://github.com/Lmao-Zedong24/ProjetCCC/assets/100137824/59d30f3d-a9c4-4914-ab21-6ca40cd9b71e
+<!-- https://github.com/Lmao-Zedong24/ProjetCCC/assets/ -->
+### Finial Product
+https://github.com/Lmao-Zedong24/ProjetCCC/Assets/Sounds/ProjetCCC - JayTesting1.0 - PC, Mac & Linux Standalone - Unity 2020.3.12f1 Personal _DX11_ 2024-03-24 22-50-07.mp4
 
 
+### Iterations 
+
+
+### Cut Core Feature
+
+
+### Workflow
 Our workflow consisted of:
 * Detailed timeline on "Confluence"
 * Followed basic GitFLOW structure
