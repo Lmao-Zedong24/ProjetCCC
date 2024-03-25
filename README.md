@@ -10,7 +10,8 @@ The game is in the style of Getting Over It and Jump King, where you could lose 
 
 <!-- https://github.com/Lmao-Zedong24/ProjetCCC/assets/ -->
 ### Finial Product
-"https://github.com/Lmao-Zedong24/ProjetCCC/Assets/Sounds/ProjetCCC - JayTesting1.0 - PC, Mac & Linux Standalone - Unity 2020.3.12f1 Personal _DX11_ 2024-03-24 22-50-07.mp4"
+https://github.com/Lmao-Zedong24/ProjetCCC/assets/100137824/081032df-39c3-4924-9030-90df8e0212f3
+
 
 
 ### Iterations 
